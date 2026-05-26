@@ -7,7 +7,6 @@
 src/main/resources/application.properties
 .env
 .env.*
-application-prod.properties
 application-local.properties
 secrets.properties
 
