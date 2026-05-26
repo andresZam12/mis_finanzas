@@ -1,0 +1,28 @@
+<div class="page">
+  <div class="page-header">
+    <h2>🎯 Nueva Meta de Ahorro</h2>
+    <a routerLink="/metas" class="btn btn-secondary">← Volver</a>
+  </div>
+
+  <div class="card" style="max-width:480px">
+    @if (error) { <div class="alerta alerta-error">{{ error }}</div> }
+
+    <form [formGroup]="form" (ngSubmit)="enviar()">
+      <div class="form-group">
+        <label>Monto meta ($)</label>
+        <input type="number" formControlName="montoMeta" placeholder="0" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Mes (1-12)</label>
+        <input type="number" formControlName="mes" min="1" max="12" />
+      </div>
+      <div class="form-group">
+        <label>Año</label>
+        <input type="number" formControlName="anio" min="2020" max="2099" />
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || cargando">
+        {{ cargando ? 'Guardando...' : 'Crear meta' }}
+      </button>
+    </form>
+  </div>
+</div>

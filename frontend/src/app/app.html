@@ -1,0 +1,49 @@
+@if (isAuthenticated) {
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-icon">💰</span>
+        <span class="brand-name">Finanzas</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        @for (item of menuItems; track item.id) {
+          @if (item.hijos && item.hijos.length > 0) {
+            <div class="nav-group">
+              <button class="nav-grupo" (click)="toggle(item)">
+                <span>{{ item.icono }} {{ item.nombre }}</span>
+                <span class="flecha">{{ item.expandido ? '▾' : '▸' }}</span>
+              </button>
+              @if (item.expandido) {
+                <div class="nav-hijos">
+                  @for (hijo of item.hijos; track hijo.id) {
+                    <a [routerLink]="hijo.url" routerLinkActive="activo" class="nav-link hijo">
+                      {{ hijo.icono }} {{ hijo.nombre }}
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <a [routerLink]="item.url" routerLinkActive="activo" class="nav-link">
+              {{ item.icono }} {{ item.nombre }}
+            </a>
+          }
+        }
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-user">👤 {{ username }}</span>
+        <button class="btn-logout" (click)="logout()">Salir</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <router-outlet />
+    </main>
+  </div>
+}
+
+@if (!isAuthenticated) {
+  <router-outlet />
+}

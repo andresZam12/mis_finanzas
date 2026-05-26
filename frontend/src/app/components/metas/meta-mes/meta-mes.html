@@ -1,0 +1,38 @@
+<div class="page">
+  <div class="page-header">
+    <h2>🎯 Meta de Ahorro</h2>
+    <a routerLink="/metas/nueva" class="btn btn-primary">➕ Nueva meta</a>
+  </div>
+
+  <div class="filtro-mes" style="display:flex;gap:8px;margin-bottom:20px;align-items:center">
+    <select [(ngModel)]="mes" (change)="buscar()">
+      @for (m of meses; track $index) {
+        <option [value]="$index + 1">{{ m }}</option>
+      }
+    </select>
+    <input type="number" [(ngModel)]="anio" (change)="buscar()" min="2020" max="2099" style="width:90px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px" />
+    <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando...</p>
+  } @else if (error) {
+    <div class="alerta alerta-error">{{ error }}</div>
+  } @else if (meta) {
+    <div class="card" style="max-width:480px">
+      <h3 style="margin-bottom:16px">{{ nombreMes }} {{ anio }}</h3>
+      <div class="stats-grid" style="grid-template-columns:1fr 1fr">
+        <div class="stat-card">
+          <div class="stat-label">Meta mensual</div>
+          <div class="stat-value stat-neutral">{{ meta.montoMeta | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">¿Cumplida?</div>
+          <div class="stat-value" [class.stat-positive]="cumplio === true" [class.stat-negative]="cumplio === false">
+            {{ cumplio === null ? '...' : (cumplio ? '✅ Sí' : '❌ No') }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

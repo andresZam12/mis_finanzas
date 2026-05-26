@@ -1,0 +1,28 @@
+<div class="page">
+  <div class="page-header">
+    <h2>💰 Registrar Ahorro</h2>
+    <a routerLink="/ahorros" class="btn btn-secondary">← Volver</a>
+  </div>
+
+  <div class="card" style="max-width:480px">
+    @if (error) { <div class="alerta alerta-error">{{ error }}</div> }
+
+    <form [formGroup]="form" (ngSubmit)="enviar()">
+      <div class="form-group">
+        <label>Monto ($)</label>
+        <input type="number" formControlName="monto" placeholder="0" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Porcentaje (%)</label>
+        <input type="number" formControlName="porcentaje" placeholder="0" min="0" max="100" />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" formControlName="descripcion" placeholder="Ej: Ahorro mes de enero" />
+      </div>
+      <button type="submit" class="btn btn-success" [disabled]="form.invalid || cargando">
+        {{ cargando ? 'Guardando...' : 'Registrar ahorro' }}
+      </button>
+    </form>
+  </div>
+</div>

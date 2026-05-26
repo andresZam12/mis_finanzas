@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="page-header">
+    <h2>🎯 Mis Metas</h2>
+    <a routerLink="/metas/nueva" class="btn btn-primary">➕ Nueva meta</a>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando metas...</p>
+  } @else {
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Período</th>
+            <th>Meta de ahorro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of metas; track m.id) {
+            <tr>
+              <td><strong>{{ nombreMes(m.mes) }} {{ m.anio }}</strong></td>
+              <td>{{ m.montoMeta | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td>
+                <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="eliminar(m.id!)" [disabled]="eliminandoId === m.id">🗑️</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:24px">No hay metas registradas</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

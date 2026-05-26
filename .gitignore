@@ -34,6 +34,10 @@ out/
 Thumbs.db
 desktop.ini
 
+# ---- Frontend ----
+frontend/node_modules/
+frontend/dist/
+
 # ---- Logs ----
 *.log
 logs/

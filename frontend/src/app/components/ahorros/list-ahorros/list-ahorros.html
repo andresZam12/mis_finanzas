@@ -1,0 +1,48 @@
+<div class="page">
+  <div class="page-header">
+    <h2>💰 Mis Ahorros</h2>
+    <a routerLink="/ahorros/nuevo" class="btn btn-success">➕ Registrar ahorro</a>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando ahorros...</p>
+  } @else {
+    <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
+      <div class="stat-label">Total ahorrado</div>
+      <div class="stat-value stat-positive">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    </div>
+
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>% Aplicado</th>
+            <th>Monto ahorrado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of ahorros; track a.id) {
+            <tr>
+              <td>{{ a.fecha | date:'dd/MM/yyyy' }}</td>
+              <td>{{ a.descripcion }}</td>
+              <td><span class="badge badge-blue">{{ a.porcentaje }}%</span></td>
+              <td class="monto-positivo">{{ a.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td>
+                <button class="btn btn-danger" style="padding:4px 10px;font-size:0.8rem"
+                  (click)="eliminar(a.id)"
+                  [disabled]="eliminandoId === a.id">
+                  🗑️ Eliminar
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No hay ahorros registrados</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

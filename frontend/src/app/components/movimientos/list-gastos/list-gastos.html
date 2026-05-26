@@ -1,0 +1,54 @@
+<div class="page">
+  <div class="page-header">
+    <h2>📉 Gastos</h2>
+    <a routerLink="/movimientos/nuevo-gasto" class="btn btn-danger">➖ Nuevo gasto</a>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando gastos...</p>
+  } @else {
+    <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
+      <div class="stat-label">Total gastos</div>
+      <div class="stat-value stat-negative">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    </div>
+
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Tipo pago</th>
+            <th>Categoría</th>
+            <th>Recurrente</th>
+            <th>Monto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (g of gastos; track g.id) {
+            <tr>
+              <td>{{ g.fecha | date:'dd/MM/yyyy' }}</td>
+              <td>{{ g.descripcion }}</td>
+              <td>{{ g.tipoPago || '—' }}</td>
+              <td>{{ g.categoria?.nombre }}</td>
+              <td>
+                <span class="badge" [class.badge-blue]="g.esRecurrente" [class.badge-gray]="!g.esRecurrente">
+                  {{ g.esRecurrente ? 'Sí' : 'No' }}
+                </span>
+              </td>
+              <td class="monto-negativo">{{ g.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td style="display:flex;gap:4px;flex-wrap:wrap">
+                <a [routerLink]="['/movimientos/gastos', g.id, 'editar']" class="btn btn-secondary" style="padding:4px 8px;font-size:0.8rem">✏️</a>
+                <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="eliminar(g.id)" [disabled]="eliminandoId === g.id">🗑️</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">No hay gastos registrados</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

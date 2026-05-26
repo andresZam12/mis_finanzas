@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="page-header">
+    <h2>📈 Ingresos</h2>
+    <a routerLink="/movimientos/nuevo-ingreso" class="btn btn-success">➕ Nuevo ingreso</a>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando ingresos...</p>
+  } @else {
+    <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
+      <div class="stat-label">Total ingresos</div>
+      <div class="stat-value stat-positive">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    </div>
+
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Fuente</th>
+            <th>Tipo pago</th>
+            <th>Categoría</th>
+            <th>Recurrente</th>
+            <th>Monto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (i of ingresos; track i.id) {
+            <tr>
+              <td>{{ i.fecha | date:'dd/MM/yyyy' }}</td>
+              <td>{{ i.descripcion }}</td>
+              <td>{{ i.fuente }}</td>
+              <td>{{ i.tipoPago || '—' }}</td>
+              <td>{{ i.categoria?.nombre }}</td>
+              <td>
+                <span class="badge" [class.badge-blue]="i.esRecurrente" [class.badge-gray]="!i.esRecurrente">
+                  {{ i.esRecurrente ? 'Sí' : 'No' }}
+                </span>
+              </td>
+              <td class="monto-positivo">{{ i.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td style="display:flex;gap:4px;flex-wrap:wrap">
+                <a [routerLink]="['/movimientos/ingresos', i.id, 'editar']" class="btn btn-secondary" style="padding:4px 8px;font-size:0.8rem">✏️</a>
+                <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="eliminar(i.id)" [disabled]="eliminandoId === i.id">🗑️</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:24px">No hay ingresos registrados</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

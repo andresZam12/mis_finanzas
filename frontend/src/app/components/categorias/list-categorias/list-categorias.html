@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="page-header">
+    <h2>🏷️ Categorías</h2>
+    <a routerLink="/categorias/nueva" class="btn btn-primary">➕ Nueva categoría</a>
+  </div>
+
+  @if (cargando) {
+    <p class="alerta alerta-info">Cargando categorías...</p>
+  } @else {
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of categorias; track cat.id) {
+            <tr>
+              <td>{{ cat.nombre }}</td>
+              <td>
+                <span class="badge" [class.badge-green]="cat.tipo === 'INGRESO'" [class.badge-red]="cat.tipo === 'GASTO'">
+                  {{ cat.tipo }}
+                </span>
+              </td>
+              <td style="display:flex;gap:4px">
+                <a [routerLink]="['/categorias', cat.id, 'editar']" class="btn btn-secondary" style="padding:4px 8px;font-size:0.8rem">✏️</a>
+                <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="eliminar(cat.id!)" [disabled]="eliminandoId === cat.id">🗑️</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:24px">No hay categorías registradas</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

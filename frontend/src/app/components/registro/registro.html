@@ -1,0 +1,38 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <span class="login-icon">💰</span>
+      <h1>Finanzas Personales</h1>
+      <p>Crea tu cuenta</p>
+    </div>
+
+    @if (error) {
+      <div class="alerta alerta-error">{{ error }}</div>
+    }
+    @if (exito) {
+      <div class="alerta alerta-success">{{ exito }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="enviar()">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" formControlName="nombre" placeholder="Tu nombre" />
+      </div>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" formControlName="username" placeholder="Sin espacios" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres" />
+      </div>
+      <button type="submit" class="btn btn-primary login-btn" [disabled]="form.invalid || cargando">
+        {{ cargando ? 'Creando cuenta...' : 'Registrarse' }}
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:16px;font-size:0.9rem">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+  </div>
+</div>

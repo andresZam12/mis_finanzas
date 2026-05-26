@@ -1,0 +1,9 @@
+.filtro-mes { display: flex; gap: 8px; align-items: center; }
+.filtro-mes select, .filtro-mes input { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; }
+
+.barra-contenedor { display: flex; flex-direction: column; gap: 12px; }
+.barra-item { display: grid; grid-template-columns: 80px 1fr 140px; align-items: center; gap: 12px; }
+.barra { height: 16px; border-radius: 8px; transition: width 0.4s; min-width: 4px; }
+.barra-verde { background: #22c55e; }
+.barra-roja { background: #ef4444; }
+.accesos-rapidos { display: flex; flex-wrap: wrap; gap: 10px; }
