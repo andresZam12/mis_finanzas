@@ -22,6 +22,7 @@ export class App implements OnInit, OnDestroy {
   isAuthenticated = false;
   username = '';
   menuItems: MenuDisplay[] = [];
+  sidebarAbierto = false;
   private sub!: Subscription;
 
   constructor(private authService: AuthService, private menuService: MenuService) {}
@@ -50,6 +51,10 @@ export class App implements OnInit, OnDestroy {
   ngOnDestroy() { this.sub.unsubscribe(); }
 
   toggle(item: MenuDisplay) { item.expandido = !item.expandido; }
+
+  toggleSidebar() { this.sidebarAbierto = !this.sidebarAbierto; }
+
+  cerrarSidebar() { this.sidebarAbierto = false; }
 
   logout() { this.authService.logout(); }
 }

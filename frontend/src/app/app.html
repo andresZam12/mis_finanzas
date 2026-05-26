@@ -1,9 +1,20 @@
 @if (isAuthenticated) {
   <div class="layout">
-    <aside class="sidebar">
+
+    <div class="topbar-mobile">
+      <button class="btn-hamburger" (click)="toggleSidebar()">☰</button>
+      <span class="topbar-titulo">💰 Finanzas</span>
+    </div>
+
+    @if (sidebarAbierto) {
+      <div class="overlay" (click)="cerrarSidebar()"></div>
+    }
+
+    <aside class="sidebar" [class.abierto]="sidebarAbierto">
       <div class="sidebar-brand">
         <span class="brand-icon">💰</span>
         <span class="brand-name">Finanzas</span>
+        <button class="btn-cerrar-sidebar" (click)="cerrarSidebar()">✕</button>
       </div>
 
       <nav class="sidebar-nav">
@@ -17,7 +28,7 @@
               @if (item.expandido) {
                 <div class="nav-hijos">
                   @for (hijo of item.hijos; track hijo.id) {
-                    <a [routerLink]="hijo.url" routerLinkActive="activo" class="nav-link hijo">
+                    <a [routerLink]="hijo.url" routerLinkActive="activo" class="nav-link hijo" (click)="cerrarSidebar()">
                       {{ hijo.icono }} {{ hijo.nombre }}
                     </a>
                   }
@@ -25,7 +36,7 @@
               }
             </div>
           } @else {
-            <a [routerLink]="item.url" routerLinkActive="activo" class="nav-link">
+            <a [routerLink]="item.url" routerLinkActive="activo" class="nav-link" (click)="cerrarSidebar()">
               {{ item.icono }} {{ item.nombre }}
             </a>
           }
