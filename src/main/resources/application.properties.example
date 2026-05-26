@@ -1,0 +1,43 @@
+# ==========================================================
+# PLANTILLA DE CONFIGURACIÓN — copia este archivo como
+# application.properties y rellena tus propios valores
+# ==========================================================
+
+spring.application.name=finanzas
+
+# ----------------------------------------------------------
+# Servidor
+# ----------------------------------------------------------
+server.port=8081
+
+# ----------------------------------------------------------
+# Base de datos PostgreSQL
+# Crear la BD antes de arrancar:  CREATE DATABASE finanzas_db;
+# ----------------------------------------------------------
+spring.datasource.url=jdbc:postgresql://localhost:5432/finanzas_db
+spring.datasource.username=postgres
+spring.datasource.password=TU_CONTRASEÑA_AQUI
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# ----------------------------------------------------------
+# JPA / Hibernate
+# ----------------------------------------------------------
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# ----------------------------------------------------------
+# JWT  —  usa una clave larga y aleatoria en producción
+# expiracion en ms:  access 24h = 86400000  |  refresh 7d = 604800000
+# ----------------------------------------------------------
+jwt.secret=TU_CLAVE_JWT_SECRETA_AQUI
+jwt.expiration=86400000
+jwt.refresh-expiration=604800000
+
+# ----------------------------------------------------------
+# Logging
+# ----------------------------------------------------------
+logging.level.org.springframework.security=DEBUG
+logging.level.com.ucc.finanzas=DEBUG

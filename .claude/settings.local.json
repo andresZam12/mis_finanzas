@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn --version)",
+      "Bash(ls \"C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzasFront\" 2>/dev/null || echo \"Carpeta vacía o no existe\")",
+      "Read(//c/Users/andre/INGENIERIA_SOFTWARE/S6/POO/finanzasFront/**)",
+      "Bash(dir \"C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzasFront\" /b)",
+      "PowerShell(ng version 2>&1)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzasFront\"; Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"Set-Location 'C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzasFront'; ng serve\")",
+      "Bash(npm install *)",
+      "Bash(PGPASSWORD=\"Azb02042001*\" psql -U postgres -d finanzas_db -h localhost -c \"\\\\dt\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\PostgreSQL\\\\17\\\\bin\\\\psql.exe\" -U postgres -d finanzas_db -h localhost -c \"\\\\dt\" 2>&1)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzas\\\\src\\\\main\\\\java\\\\com\\\\ucc\\\\finanzas\\\\\" -Recurse -Filter \"*.java\" | Select-Object -ExpandProperty FullName)",
+      "Bash(start \"C:\\\\Users\\\\andre\\\\INGENIERIA_SOFTWARE\\\\S6\\\\POO\\\\finanzas\\\\out\\\\diagrama_capas\\\\diagrama_capas.png\")",
+      "Bash(git init *)",
+      "Bash(git remote *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src\\app\\models",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src\\app\\services",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src\\app\\guards",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src\\app\\interceptors",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src\\app",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront\\src",
+      "C:\\Users\\andre\\INGENIERIA_SOFTWARE\\S6\\POO\\finanzasFront"
+    ]
+  }
+}

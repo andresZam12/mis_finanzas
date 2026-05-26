@@ -1,0 +1,223 @@
+@startuml diagrama_funcional
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam usecase {
+    BackgroundColor #EBF5FB
+    BorderColor #1A5276
+    FontSize 11
+    ArrowColor #2C3E50
+}
+
+skinparam actor {
+    BackgroundColor #FDFEFE
+    BorderColor #2C3E50
+    FontSize 12
+    FontStyle bold
+}
+
+skinparam rectangle {
+    BackgroundColor #F8F9FA
+    BorderColor #2C3E50
+    FontSize 13
+    FontStyle bold
+}
+
+skinparam note {
+    BackgroundColor #FEFBD8
+    BorderColor #D4AC0D
+    FontSize 10
+}
+
+title <b>Diagrama Funcional — Casos de Uso</b>\nSistema de Finanzas Personales — POO UCC\n
+
+' ======================================================
+'  ACTORES
+' ======================================================
+actor "Usuario"  as U
+actor "Sistema"  as S  #D5F5E3
+
+' ======================================================
+'  FRONTERA DEL SISTEMA
+' ======================================================
+rectangle "Sistema de Finanzas Personales" {
+
+    ' --- MÓDULO AUTENTICACIÓN ---
+    package "Autenticación" #D6EAF8 {
+        usecase "Registrarse"          as UC_REG
+        usecase "Iniciar sesión"       as UC_LOGIN
+        usecase "Cerrar sesión"        as UC_LOGOUT
+    }
+
+    ' --- MÓDULO DASHBOARD ---
+    package "Dashboard" #D5F5E3 {
+        usecase "Ver resumen financiero\n(balance, ingresos, gastos)" as UC_DASH
+        usecase "Ver desglose\npor tipo de pago"                      as UC_DASH_TIPO
+    }
+
+    ' --- MÓDULO MOVIMIENTOS ---
+    package "Movimientos" #FEF9E7 {
+        usecase "Registrar ingreso"         as UC_ING
+        usecase "Editar ingreso"            as UC_ING_ED
+        usecase "Eliminar ingreso"          as UC_ING_DEL
+        usecase "Listar ingresos"           as UC_ING_LIST
+        usecase "Registrar gasto"           as UC_GAS
+        usecase "Editar gasto"              as UC_GAS_ED
+        usecase "Eliminar gasto"            as UC_GAS_DEL
+        usecase "Listar gastos"             as UC_GAS_LIST
+    }
+
+    ' --- MÓDULO CATEGORÍAS ---
+    package "Categorías" #FDEDEC {
+        usecase "Crear categoría"           as UC_CAT_C
+        usecase "Editar categoría"          as UC_CAT_E
+        usecase "Eliminar categoría"        as UC_CAT_D
+        usecase "Listar categorías"         as UC_CAT_L
+    }
+
+    ' --- MÓDULO DEUDAS ---
+    package "Deudas" #F9EBEA {
+        usecase "Registrar deuda"           as UC_DEU_C
+        usecase "Editar deuda"              as UC_DEU_E
+        usecase "Abonar a deuda"            as UC_DEU_A
+        usecase "Marcar deuda como pagada"  as UC_DEU_P
+        usecase "Eliminar deuda"            as UC_DEU_D
+        usecase "Listar deudas"             as UC_DEU_L
+    }
+
+    ' --- MÓDULO METAS ---
+    package "Metas de Ahorro" #EBF5FB {
+        usecase "Crear meta mensual"        as UC_META_C
+        usecase "Ver meta del mes actual"   as UC_META_M
+        usecase "Listar todas las metas"    as UC_META_L
+        usecase "Eliminar meta"             as UC_META_D
+    }
+
+    ' --- MÓDULO AHORROS ---
+    package "Ahorros" #E9F7EF {
+        usecase "Ver mis ahorros"           as UC_AHO_L
+    }
+
+    ' --- MÓDULO REPORTES ---
+    package "Reportes" #F4ECF7 {
+        usecase "Generar reporte\nfinanciero mensual"   as UC_REP
+    }
+
+    ' --- MÓDULO MENÚ ---
+    package "Menú dinámico" #FDF2E9 {
+        usecase "Navegar por el menú\n(cargado desde BD)"  as UC_MENU
+    }
+
+    ' ===================================================
+    '  ACCIONES AUTOMÁTICAS DEL SISTEMA
+    ' ===================================================
+    usecase "Calcular y registrar\nahorro automático\n(% del ingreso)"         as UC_SYS_AHO
+    usecase "Crear gasto automático\nal abonar deuda"                          as UC_SYS_GAS
+    usecase "Verificar cumplimiento\nde meta mensual"                          as UC_SYS_META
+    usecase "Poblar tabla menu\nal primer arranque\n(MenuSeeder)"              as UC_SYS_SEED
+}
+
+' ======================================================
+'  RELACIONES USUARIO
+' ======================================================
+
+' Autenticación
+U --> UC_REG
+U --> UC_LOGIN
+U --> UC_LOGOUT
+
+' Dashboard
+U --> UC_DASH
+U --> UC_DASH_TIPO
+
+' Movimientos
+U --> UC_ING
+U --> UC_ING_ED
+U --> UC_ING_DEL
+U --> UC_ING_LIST
+U --> UC_GAS
+U --> UC_GAS_ED
+U --> UC_GAS_DEL
+U --> UC_GAS_LIST
+
+' Categorías
+U --> UC_CAT_C
+U --> UC_CAT_E
+U --> UC_CAT_D
+U --> UC_CAT_L
+
+' Deudas
+U --> UC_DEU_C
+U --> UC_DEU_E
+U --> UC_DEU_A
+U --> UC_DEU_P
+U --> UC_DEU_D
+U --> UC_DEU_L
+
+' Metas
+U --> UC_META_C
+U --> UC_META_M
+U --> UC_META_L
+U --> UC_META_D
+
+' Ahorros
+U --> UC_AHO_L
+
+' Reportes
+U --> UC_REP
+
+' Menú
+U --> UC_MENU
+
+' ======================================================
+'  RELACIONES SISTEMA (acciones automáticas)
+' ======================================================
+S --> UC_SYS_AHO
+S --> UC_SYS_GAS
+S --> UC_SYS_META
+S --> UC_SYS_SEED
+
+' ======================================================
+'  RELACIONES INCLUDE / EXTEND
+' ======================================================
+
+' Registrar ingreso incluye calcular ahorro automático
+UC_ING      ..> UC_SYS_AHO   : <<include>>
+
+' Abonar deuda incluye crear gasto automático
+UC_DEU_A    ..> UC_SYS_GAS   : <<include>>
+
+' Ver meta del mes extiende verificar cumplimiento
+UC_META_M   ..> UC_SYS_META  : <<include>>
+
+' Registrar ingreso/gasto requiere categoría
+UC_ING      ..> UC_CAT_L     : <<include>>
+UC_GAS      ..> UC_CAT_L     : <<include>>
+
+' ======================================================
+'  NOTAS
+' ======================================================
+note right of UC_SYS_AHO
+  Al registrar un ingreso con
+  porcentajeAhorro > 0, el sistema
+  crea un Ahorro automáticamente
+  (MovimientoService).
+end note
+
+note right of UC_SYS_GAS
+  Al abonar una deuda, el sistema
+  crea un Gasto de forma automática
+  para mantener el balance correcto
+  (DeudaService).
+end note
+
+note right of UC_SYS_SEED
+  MenuSeeder (CommandLineRunner)
+  puebla la tabla 'menu' una sola
+  vez al primer arranque del servidor.
+end note
+
+@enduml

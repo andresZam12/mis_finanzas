@@ -1,0 +1,259 @@
+@startuml diagrama_conceptual
+!theme plain
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam class {
+    BackgroundColor White
+    BorderColor #2C3E50
+    HeaderBackgroundColor #2C3E50
+    HeaderFontColor White
+    ArrowColor #2C3E50
+    AttributeFontColor #2C3E50
+}
+
+skinparam interface {
+    BackgroundColor #EBF5FB
+    BorderColor #1A5276
+    HeaderBackgroundColor #1A5276
+    HeaderFontColor White
+}
+
+skinparam note {
+    BackgroundColor #FEFBD8
+    BorderColor #D4AC0D
+    FontSize 10
+}
+
+skinparam arrow {
+    Color #2C3E50
+    FontSize 10
+}
+
+title <b>Diagrama de Clases Conceptual</b>\nSistema de Finanzas Personales — POO UCC\n
+
+' ======================================================
+'  INTERFAZ
+' ======================================================
+interface Recurrente <<interfaz>> {
+    + {abstract} aplicarRecurrencia() : void
+}
+
+' ======================================================
+'  CLASE ABSTRACTA BASE
+' ======================================================
+abstract class Movimiento <<abstracta>> {
+    - id          : Long
+    - monto       : double
+    - fecha       : Date
+    - descripcion : String
+    - categoria   : Categoria
+    - usuario     : Usuario
+    ..
+    + {abstract} registrar() : void
+    + validarMonto()         : boolean
+    + getMonto()             : double
+    + getDescripcion()       : String
+    + getCategoria()         : Categoria
+    + getUsuario()           : Usuario
+}
+
+' ======================================================
+'  CLASES CONCRETAS (heredan de Movimiento)
+' ======================================================
+class Ingreso <<@Entity>> {
+    - fuente       : String
+    - tipoPago     : String
+    - esRecurrente : boolean
+    ..
+    + registrar()            : void
+    + aplicarRecurrencia()   : void
+    + getFuente()            : String
+    + getTipoPago()          : String
+    + isEsRecurrente()       : boolean
+}
+
+class Gasto <<@Entity>> {
+    - tipoPago     : String
+    - esRecurrente : boolean
+    ..
+    + registrar()            : void
+    + aplicarRecurrencia()   : void
+    + getTipoPago()          : String
+    + isEsRecurrente()       : boolean
+}
+
+' ======================================================
+'  ENTIDADES INDEPENDIENTES
+' ======================================================
+class Usuario <<@Entity>> {
+    - id       : Long
+    - username : String
+    - password : String
+    - nombre   : String
+    - estado   : String
+    ..
+    + validarUsername() : boolean
+    + getUsername()     : String
+    + getNombre()       : String
+    + getEstado()       : String
+}
+
+class Categoria <<@Entity>> {
+    - id     : Long
+    - nombre : String
+    - tipo   : String
+    ..
+    + validarNombre() : boolean
+    + validarTipo()   : boolean
+    + getNombre()     : String
+    + getTipo()       : String
+}
+
+class Deuda <<@Entity>> {
+    - id           : Long
+    - persona      : String
+    - monto        : double
+    - montoPagado  : double
+    - descripcion  : String
+    - tipo         : String
+    - tipoPago     : String
+    - estado       : String
+    - fechaRegistro: Date
+    ..
+    + marcarPagada()               : boolean
+    + abonar(monto : double)       : void
+    + getMontoRestante()           : double
+    + validarMonto()               : boolean
+    + validarTipo()                : boolean
+}
+
+class Ahorro <<@Entity>> {
+    - id          : Long
+    - monto       : double
+    - porcentaje  : double
+    - descripcion : String
+    - fecha       : Date
+    ..
+    + getMonto()      : double
+    + getPorcentaje() : double
+}
+
+class MetaAhorro <<@Entity>> {
+    - id         : Long
+    - montoMeta  : double
+    - mes        : int
+    - anio       : int
+    ..
+    + verificarCumplimiento(balance : double) : boolean
+    + validarMonto()                          : boolean
+    + getMes()                                : int
+    + getAnio()                               : int
+}
+
+class ReporteFinanciero <<no@Entity>> {
+    - mes           : int
+    - anio          : int
+    - totalIngresos : double
+    - totalGastos   : double
+    - balance       : double
+    - nombreUsuario : String
+    ..
+    + calcularBalance()  : double
+    + generarResumen()   : String
+    + toString()         : String
+}
+
+class Menu <<@Entity>> {
+    - id     : Long
+    - nombre : String
+    - url    : String
+    - icono  : String
+    - orden  : int
+    - padre  : Menu
+    ..
+    + getNombre()           : String
+    + getUrl()              : String
+    + getHijos()            : List<Menu>
+}
+
+' ======================================================
+'  RELACIONES
+' ======================================================
+
+' --- HERENCIA (extends) ---
+Movimiento <|-- Ingreso : herencia
+Movimiento <|-- Gasto   : herencia
+
+' --- REALIZACIÓN (implements) ---
+Recurrente <|.. Ingreso : realización
+Recurrente <|.. Gasto   : realización
+
+' --- ASOCIACIÓN: Movimiento → Categoria / Usuario (ManyToOne) ---
+Movimiento "N" --> "1" Categoria : categoría >
+Movimiento "N" --> "1" Usuario   : pertenece a >
+
+' --- ASOCIACIÓN: Deuda / Ahorro / MetaAhorro → Usuario ---
+Deuda      "N" --> "1" Usuario : propietario >
+Ahorro     "N" --> "1" Usuario : propietario >
+MetaAhorro "N" --> "1" Usuario : propietario >
+
+' --- COMPOSICIÓN: Menu (árbol recursivo, CascadeType.ALL) ---
+Menu "1" *-- "0..*" Menu : hijos ▸
+
+' --- DEPENDENCIA: ReporteFinanciero usa datos de Ingreso y Gasto ---
+ReporteFinanciero ..> Ingreso : <<usa>>
+ReporteFinanciero ..> Gasto   : <<usa>>
+
+' ======================================================
+'  NOTAS EXPLICATIVAS
+' ======================================================
+note top of Movimiento
+  <b>ABSTRACCIÓN</b>
+  Clase abstracta: nunca se instancia directamente.
+  registrar() es abstracto, obliga a cada subclase
+  a definir su propio comportamiento.
+  @MappedSuperclass → sus campos se mapean en las
+  tablas ingreso y gasto (no crea tabla propia).
+end note
+
+note right of Ingreso
+  <b>HERENCIA + POLIMORFISMO</b>
+  registrar() → "suma al balance del usuario"
+  Mismo mensaje, implementación propia.
+end note
+
+note right of Gasto
+  <b>HERENCIA + POLIMORFISMO</b>
+  registrar() → "resta del balance del usuario"
+  Mismo mensaje, implementación distinta a Ingreso.
+end note
+
+note top of Recurrente
+  <b>ABSTRACCIÓN (interfaz)</b>
+  Contrato puro: solo declara qué hay que hacer,
+  no cómo. Permite que Ingreso y Gasto hereden
+  de Movimiento Y cumplan este contrato al mismo
+  tiempo (Java no permite herencia múltiple de clases).
+end note
+
+note bottom of Menu
+  <b>COMPOSICIÓN RECURSIVA</b>
+  Un Menu tiene 0..N hijos del mismo tipo.
+  Si se elimina el padre, los hijos se eliminan
+  en cascada (CascadeType.ALL).
+  Árbol n-ario de profundidad arbitraria.
+end note
+
+note bottom of ReporteFinanciero
+  <b>DEPENDENCIA</b>
+  No es @Entity — no se guarda en BD.
+  Se construye en memoria usando datos
+  de Ingreso y Gasto. Relación de uso,
+  no de pertenencia.
+end note
+
+@enduml

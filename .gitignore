@@ -1,0 +1,43 @@
+# ==========================================================
+# .gitignore — Sistema de Finanzas Personales
+# Spring Boot 3.4 + Maven
+# ==========================================================
+
+# ---- Credenciales y configuración sensible ----
+src/main/resources/application.properties
+.env
+.env.*
+application-prod.properties
+application-local.properties
+secrets.properties
+
+# ---- Compilados Maven ----
+target/
+*.class
+*.jar
+*.war
+*.ear
+!.mvn/wrapper/maven-wrapper.jar
+
+# ---- IDE — IntelliJ ----
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ---- IDE — VS Code ----
+.vscode/
+*.code-workspace
+
+# ---- Sistema operativo ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Diagramas exportados ----
+out/

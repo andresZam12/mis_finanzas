@@ -1,0 +1,132 @@
+@startuml diagrama_despliegue
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam node {
+    BackgroundColor #EBF5FB
+    BorderColor #1A5276
+    FontSize 13
+    FontStyle bold
+}
+
+skinparam artifact {
+    BackgroundColor #FDFEFE
+    BorderColor #2C3E50
+    FontSize 11
+}
+
+skinparam database {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontSize 11
+}
+
+skinparam component {
+    BackgroundColor #D5F5E3
+    BorderColor #1E8449
+    FontSize 11
+}
+
+skinparam arrow {
+    Color #2C3E50
+    FontSize 10
+}
+
+skinparam note {
+    BackgroundColor #FEFBD8
+    BorderColor #D4AC0D
+    FontSize 10
+}
+
+title <b>Diagrama de Despliegue</b>\nSistema de Finanzas Personales — POO UCC\n
+
+' ======================================================
+'  NODO 1 — MÁQUINA DEL USUARIO
+' ======================================================
+node "PC del Usuario\n«dispositivo cliente»" as cliente {
+
+    component "Navegador Web\n(Chrome / Edge)" as navegador
+
+    artifact  "Angular App (SPA)\nCompilada con ng build\npuerto 4200" as angularApp
+
+    navegador --> angularApp : ejecuta
+}
+
+' ======================================================
+'  NODO 2 — SERVIDOR DE APLICACIÓN
+' ======================================================
+node "Servidor de Aplicación\n«JVM — Java 24»" as servidor {
+
+    artifact "finanzas.jar\n(Spring Boot 3.4.1)\npuerto 8081" as jar
+
+    component "Spring Security\n(JwtFilter + BCrypt)" as security
+    component "Capa REST\n(Controllers)" as controllers
+    component "Lógica de Negocio\n(Services)" as services
+    component "Acceso a Datos\n(Repositories + JPA)" as repositories
+    component "MenuSeeder\n(CommandLineRunner)" as seeder
+
+    jar          --> security
+    security     --> controllers
+    controllers  --> services
+    services     --> repositories
+    seeder       --> repositories : puebla tabla menu\nal arrancar
+}
+
+' ======================================================
+'  NODO 3 — SERVIDOR DE BASE DE DATOS
+' ======================================================
+node "Servidor de Base de Datos\n«PostgreSQL 17»" as baseDatos {
+
+    database "finanzas_db\npuerto 5432" as db {
+        artifact "tabla: usuario"      as tUsuario
+        artifact "tabla: ingreso"      as tIngreso
+        artifact "tabla: gasto"        as tGasto
+        artifact "tabla: categoria"    as tCategoria
+        artifact "tabla: deuda"        as tDeuda
+        artifact "tabla: ahorro"       as tAhorro
+        artifact "tabla: meta_ahorro"  as tMeta
+        artifact "tabla: menu"         as tMenu
+    }
+}
+
+' ======================================================
+'  COMUNICACIÓN ENTRE NODOS
+' ======================================================
+cliente     ..>  servidor   : HTTP / REST (JSON)\nAuthorization: Bearer JWT\npuerto 8081
+
+servidor    ..>  baseDatos  : JDBC / Hibernate\nddl-auto = update\npuerto 5432
+
+' ======================================================
+'  NOTAS
+' ======================================================
+note bottom of cliente
+  El usuario accede desde el navegador.
+  Angular intercepta todas las peticiones
+  y adjunta el JWT automáticamente
+  (AuthInterceptor).
+  Las rutas protegidas redirigen al login
+  si no hay sesión activa (AuthGuard).
+end note
+
+note bottom of servidor
+  Stateless: no guarda sesión en el servidor.
+  Cada petición lleva el JWT en la cabecera.
+  El JwtFilter valida el token antes de
+  llegar a cualquier Controller.
+  Spring Data JPA genera las consultas SQL
+  automáticamente desde los Repository.
+end note
+
+note bottom of baseDatos
+  Hibernate crea/actualiza las tablas
+  automáticamente al arrancar (ddl-auto=update).
+  ReporteFinanciero NO tiene tabla propia:
+  se calcula en memoria en ReporteService.
+  La tabla menu se puebla una sola vez
+  por MenuSeeder al primer arranque.
+end note
+
+@enduml

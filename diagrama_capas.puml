@@ -1,0 +1,269 @@
+@startuml diagrama_capas
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+
+skinparam package {
+    BackgroundColor #F8F9FA
+    BorderColor #2C3E50
+    FontSize 13
+    FontStyle bold
+}
+
+skinparam class {
+    BackgroundColor White
+    BorderColor #2C3E50
+    HeaderBackgroundColor #2C3E50
+    HeaderFontColor White
+    FontSize 10
+}
+
+skinparam interface {
+    BackgroundColor #EBF5FB
+    BorderColor #1A5276
+    HeaderBackgroundColor #1A5276
+    HeaderFontColor White
+    FontSize 10
+}
+
+skinparam arrow {
+    Color #5D6D7E
+    FontSize 9
+}
+
+title <b>Diagrama por Capas — Arquitectura N-Capas</b>\nSistema de Finanzas Personales — POO UCC\n
+
+' =====================================================
+'  CAPA 1 — CONTROLADORES (REST)
+' =====================================================
+package "Capa Controladores  ·  REST API / Spring MVC" #D6EAF8 {
+
+    class AuthController {
+        + login(req : AuthRequest)         : ResponseEntity
+        + registrar(req : RegistroRequest) : ResponseEntity
+    }
+
+    class MovimientoController {
+        + listarIngresos(usuarioId : Long) : ResponseEntity
+        + listarGastos(usuarioId : Long)   : ResponseEntity
+        + registrar(req : MovimientoRequest) : ResponseEntity
+        + editar(id : Long, req)            : ResponseEntity
+        + eliminar(id : Long, tipo : String) : ResponseEntity
+    }
+
+    class CategoriaController {
+        + listar()                          : ResponseEntity
+        + crear(req : Categoria)            : ResponseEntity
+        + editar(id : Long, req : Categoria): ResponseEntity
+        + eliminar(id : Long)               : ResponseEntity
+    }
+
+    class DeudaController {
+        + listar(usuarioId : Long)          : ResponseEntity
+        + registrar(req : DeudaRequest)     : ResponseEntity
+        + marcarPagada(id : Long)           : ResponseEntity
+        + abonar(id : Long, monto : double) : ResponseEntity
+        + editar(id : Long, req)            : ResponseEntity
+        + eliminar(id : Long)               : ResponseEntity
+    }
+
+    class MetaAhorroController {
+        + listarTodas(usuarioId : Long)     : ResponseEntity
+        + consultarMes(uid, mes, anio)      : ResponseEntity
+        + crear(req : MetaAhorroRequest)    : ResponseEntity
+        + eliminar(id : Long)               : ResponseEntity
+    }
+
+    class AhorroController {
+        + listar(usuarioId : Long)          : ResponseEntity
+    }
+
+    class ReporteController {
+        + reporte(uid, mes, anio)           : ResponseEntity
+    }
+
+    class MenuController {
+        + listar()                          : ResponseEntity
+    }
+}
+
+' =====================================================
+'  CAPA 2 — SERVICIOS (Lógica de Negocio)
+' =====================================================
+package "Capa Servicios  ·  Lógica de Negocio" #D5F5E3 {
+
+    class AuthService {
+        + login(req)        : AuthResponse
+        + registrar(req)    : Usuario
+        + buscarPorId(id)   : Usuario
+    }
+
+    class MovimientoService {
+        + registrarIngreso(req) : Ingreso
+        + registrarGasto(req)   : Gasto
+        + editarIngreso(id,req) : Ingreso
+        + editarGasto(id,req)   : Gasto
+        + eliminarIngreso(id)   : void
+        + eliminarGasto(id)     : void
+        + listarIngresos(uid)   : List<Ingreso>
+        + listarGastos(uid)     : List<Gasto>
+        - normalizarTipoPago(s) : String
+    }
+
+    class CategoriaService {
+        + crear(req)     : Categoria
+        + editar(id,req) : Categoria
+        + eliminar(id)   : void
+        + listar()       : List<Categoria>
+    }
+
+    class DeudaService {
+        + registrarDeuda(req)        : Deuda
+        + editarDeuda(id,req)        : Deuda
+        + marcarPagada(id)           : Deuda
+        + abonarDeuda(id, monto)     : Deuda
+        + eliminarDeuda(id)          : void
+        + listarPorUsuario(uid)      : List<Deuda>
+        + listarPorEstado(uid,estado): List<Deuda>
+        - normalizarTipoPago(s)      : String
+    }
+
+    class MetaAhorroService {
+        + crear(req)             : MetaAhorro
+        + eliminar(id)           : void
+        + listarPorUsuario(uid)  : List<MetaAhorro>
+        + consultarMeta(uid,m,a) : MetaAhorro
+    }
+
+    class AhorroService {
+        + listarPorUsuario(uid) : List<Ahorro>
+    }
+
+    class ReporteService {
+        + generarReporte(uid, mes, anio) : ReporteFinanciero
+    }
+
+    class MenuService {
+        + listarMenusRaiz() : List<Menu>
+    }
+
+    class MenuSeeder <<CommandLineRunner>> {
+        + run(args : String[]) : void
+    }
+}
+
+' =====================================================
+'  CAPA 3 — REPOSITORIOS (Acceso a Datos)
+' =====================================================
+package "Capa Repositorios  ·  JPA / Spring Data" #FEF9E7 {
+
+    interface UsuarioRepository {
+        + findByUsername(u : String) : Optional<Usuario>
+    }
+
+    interface IngresoRepository {
+        + findByUsuarioId(uid)             : List<Ingreso>
+        + findByUsuarioIdAndFechaBetween() : List<Ingreso>
+    }
+
+    interface GastoRepository {
+        + findByUsuarioId(uid)             : List<Gasto>
+        + findByUsuarioIdAndFechaBetween() : List<Gasto>
+    }
+
+    interface CategoriaRepository {
+        + findByTipo(tipo : String) : List<Categoria>
+        + findAll()                 : List<Categoria>
+    }
+
+    interface DeudaRepository {
+        + findByUsuarioId(uid)                   : List<Deuda>
+        + findByUsuarioIdAndEstado(uid, estado)  : List<Deuda>
+        + findByUsuarioIdAndTipo(uid, tipo)      : List<Deuda>
+    }
+
+    interface MetaAhorroRepository {
+        + findByUsuarioId(uid)                       : List<MetaAhorro>
+        + findByUsuarioIdAndMesAndAnio(uid, mes, a)  : Optional<MetaAhorro>
+    }
+
+    interface AhorroRepository {
+        + findByUsuarioId(uid)         : List<Ahorro>
+        + sumMontoByUsuarioIdAndFecha(): Double
+    }
+
+    interface MenuRepository {
+        + findByPadreIsNullOrderByOrdenAsc() : List<Menu>
+    }
+}
+
+' =====================================================
+'  CAPA 4 — MODELO / DOMINIO
+' =====================================================
+package "Capa Modelo  ·  Dominio / Entidades JPA" #FDEDEC {
+
+    abstract class Movimiento   <<abstracta / @MappedSuperclass>>
+    class         Ingreso       <<@Entity / tabla: ingreso>>
+    class         Gasto         <<@Entity / tabla: gasto>>
+    interface     Recurrente    <<interfaz>>
+    class         Usuario       <<@Entity / tabla: usuario>>
+    class         Categoria     <<@Entity / tabla: categoria>>
+    class         Deuda         <<@Entity / tabla: deuda>>
+    class         Ahorro        <<@Entity / tabla: ahorro>>
+    class         MetaAhorro    <<@Entity / tabla: meta_ahorro>>
+    class         ReporteFinanciero <<sin BD — generado en memoria>>
+    class         Menu          <<@Entity / tabla: menu>>
+
+    ' Relaciones dentro del modelo
+    Movimiento  <|--  Ingreso     : herencia
+    Movimiento  <|--  Gasto       : herencia
+    Recurrente  <|..  Ingreso     : realización
+    Recurrente  <|..  Gasto       : realización
+    Menu "1" *-- "0..*" Menu      : composición recursiva
+}
+
+' =====================================================
+'  DEPENDENCIAS ENTRE CAPAS
+' =====================================================
+
+' Controladores → Servicios
+AuthController       ..> AuthService
+MovimientoController ..> MovimientoService
+CategoriaController  ..> CategoriaService
+DeudaController      ..> DeudaService
+MetaAhorroController ..> MetaAhorroService
+AhorroController     ..> AhorroService
+ReporteController    ..> ReporteService
+MenuController       ..> MenuService
+
+' Servicios → Repositorios
+AuthService       ..> UsuarioRepository
+MovimientoService ..> IngresoRepository
+MovimientoService ..> GastoRepository
+MovimientoService ..> CategoriaRepository
+MovimientoService ..> UsuarioRepository
+CategoriaService  ..> CategoriaRepository
+DeudaService      ..> DeudaRepository
+DeudaService      ..> GastoRepository
+DeudaService      ..> CategoriaRepository
+MetaAhorroService ..> MetaAhorroRepository
+MetaAhorroService ..> AhorroRepository
+AhorroService     ..> AhorroRepository
+ReporteService    ..> IngresoRepository
+ReporteService    ..> GastoRepository
+MenuService       ..> MenuRepository
+MenuSeeder        ..> MenuRepository
+
+' Repositorios → Modelos
+UsuarioRepository    ..> Usuario
+IngresoRepository    ..> Ingreso
+GastoRepository      ..> Gasto
+CategoriaRepository  ..> Categoria
+DeudaRepository      ..> Deuda
+MetaAhorroRepository ..> MetaAhorro
+AhorroRepository     ..> Ahorro
+MenuRepository       ..> Menu
+
+@enduml
