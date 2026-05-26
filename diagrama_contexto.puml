@@ -1,113 +1,51 @@
 @startuml diagrama_contexto
-!theme plain
 
 skinparam backgroundColor #FFFFFF
 skinparam defaultFontName Arial
 skinparam defaultFontSize 12
 
 skinparam rectangle {
-    BackgroundColor #D6EAF8
-    BorderColor #1A5276
+    BackgroundColor #FFFFFF
+    BorderColor #000000
+    FontColor #000000
     FontSize 12
+    BorderThickness 1.5
 }
 
-skinparam actor {
-    BackgroundColor #FDFEFE
-    BorderColor #2C3E50
+skinparam usecase {
+    BackgroundColor #FFFFFF
+    BorderColor #000000
+    FontColor #000000
     FontSize 12
+    BorderThickness 1.5
 }
 
-skinparam database {
-    BackgroundColor #FEF9E7
-    BorderColor #B7950B
-    FontSize 11
-}
-
-skinparam component {
-    BackgroundColor #D5F5E3
-    BorderColor #1E8449
-    FontSize 11
-}
-
-skinparam arrow {
-    Color #2C3E50
-    FontSize 10
-}
-
-skinparam note {
-    BackgroundColor #FEFBD8
-    BorderColor #D4AC0D
-    FontSize 10
-}
+skinparam ArrowColor #000000
+skinparam ArrowFontSize 10
+skinparam ArrowFontColor #000000
 
 title <b>Diagrama de Contexto</b>\nSistema de Finanzas Personales — POO UCC\n
 
-' ======================================================
-'  ACTORES EXTERNOS
-' ======================================================
-actor "Usuario\n(Andrés)" as usuario #EBF5FB
+' ---- Entidades externas ----
+rectangle "USUARIO" as usuario
+rectangle "FRONTEND\nAngular 21" as frontend
+rectangle "BACKEND\nSpring Boot 3.4" as backend
+rectangle "BASE DE DATOS\nPostgreSQL (Neon)" as bd
 
-' ======================================================
-'  FRONTERA DEL SISTEMA
-' ======================================================
-rectangle "Sistema de Finanzas Personales" as sistema {
+' ---- Sistema central ----
+usecase "SISTEMA DE\nFINANZAS\nPERSONALES" as sistema
 
-    component "Frontend\nAngular 21\n(puerto 4200)" as frontend #D5F5E3
-    component "Backend\nSpring Boot 3.4\n(puerto 8081)" as backend #FADBD8
-    database  "Base de Datos\nPostgreSQL 17\n(puerto 5432)" as db #FEF9E7
-}
+' ---- Flujos de información ----
+usuario   -->  sistema : Credenciales, datos de\nmovimientos, deudas y metas
+sistema   -->  usuario : Dashboard, reportes\nfinancieros y confirmaciones
 
-' ======================================================
-'  SISTEMAS EXTERNOS
-' ======================================================
-component "Navegador Web\n(Chrome / Edge)" as navegador #FDF2E9
+frontend  -->  sistema : Peticiones HTTP/REST\ncon token JWT
+sistema   -->  frontend : Respuestas JSON\n(entidades y reportes)
 
-' ======================================================
-'  RELACIONES
-' ======================================================
+sistema   -->  backend : Lógica de negocio:\nvalidar, calcular, persistir
+backend   -->  sistema : Resultados procesados\ny datos estructurados
 
-usuario    -->  navegador   : accede a la app\npor navegador
-
-navegador  -->  frontend    : carga la SPA\n(HTML / CSS / JS)
-
-frontend   -->  backend     : peticiones HTTP/REST\n(JSON · JWT en cabecera)
-
-backend    -->  db          : consultas SQL\n(JDBC / JPA · Hibernate)
-
-backend    -->  frontend    : respuestas JSON\n(entidades / reportes)
-
-' ======================================================
-'  NOTAS
-' ======================================================
-note right of frontend
-  Single Page Application (SPA).
-  Componentes standalone de Angular.
-  Rutas protegidas con AuthGuard.
-  JWT enviado en cada petición
-  vía HttpInterceptor.
-end note
-
-note right of backend
-  API RESTful stateless.
-  Autenticación con JWT (JwtFilter).
-  Arquitectura por capas:
-  Controller → Service → Repository → Model.
-  Seedea el menú dinámico al arrancar.
-end note
-
-note right of db
-  7 tablas persistidas:
-  usuario, ingreso, gasto,
-  categoria, deuda, ahorro,
-  meta_ahorro, menu.
-  ReporteFinanciero NO se persiste
-  (se genera en memoria).
-end note
-
-note bottom of usuario
-  Único actor externo del sistema.
-  Se registra, inicia sesión y gestiona
-  sus finanzas personales desde el navegador.
-end note
+sistema   -->  bd : Guardar usuarios,\nmovimientos, deudas,\nahorros, categorías, menú
+bd        -->  sistema : Consultar y recuperar\nregistros persistidos
 
 @enduml

@@ -1,25 +1,29 @@
 @startuml diagrama_conceptual
-!theme plain
+hide circle
+hide empty members
 
-skinparam classAttributeIconSize 0
 skinparam backgroundColor #FFFFFF
 skinparam defaultFontName Arial
-skinparam defaultFontSize 12
+skinparam defaultFontSize 11
+skinparam classAttributeIconSize 0
 
 skinparam class {
-    BackgroundColor White
+    BackgroundColor #FFFFFF
     BorderColor #2C3E50
-    HeaderBackgroundColor #2C3E50
-    HeaderFontColor White
-    ArrowColor #2C3E50
-    AttributeFontColor #2C3E50
+    FontColor #000000
+    FontSize 13
+    FontStyle bold
+    AttributeFontColor #1A1A1A
+    AttributeFontSize 11
+    StereotypeFontColor #444444
+    StereotypeFontSize 10
 }
 
 skinparam interface {
     BackgroundColor #EBF5FB
     BorderColor #1A5276
-    HeaderBackgroundColor #1A5276
-    HeaderFontColor White
+    FontColor #000000
+    FontStyle bold
 }
 
 skinparam note {
@@ -28,10 +32,7 @@ skinparam note {
     FontSize 10
 }
 
-skinparam arrow {
-    Color #2C3E50
-    FontSize 10
-}
+skinparam ArrowColor #2C3E50
 
 title <b>Diagrama de Clases Conceptual</b>\nSistema de Finanzas Personales — POO UCC\n
 
@@ -45,45 +46,66 @@ interface Recurrente <<interfaz>> {
 ' ======================================================
 '  CLASE ABSTRACTA BASE
 ' ======================================================
-abstract class Movimiento <<abstracta>> {
+abstract class Movimiento <<@MappedSuperclass>> {
     - id          : Long
     - monto       : double
     - fecha       : Date
     - descripcion : String
     - categoria   : Categoria
     - usuario     : Usuario
-    ..
-    + {abstract} registrar() : void
-    + validarMonto()         : boolean
-    + getMonto()             : double
-    + getDescripcion()       : String
-    + getCategoria()         : Categoria
-    + getUsuario()           : Usuario
+    --
+    + Movimiento()
+    + Movimiento(monto: double, fecha: Date, descripcion: String, categoria: Categoria, usuario: Usuario)
+    + {abstract} registrar()                     : void
+    + validarMonto()                             : boolean
+    + getId()                                    : Long
+    + getMonto()                                 : double
+    + getFecha()                                 : Date
+    + getDescripcion()                           : String
+    + getCategoria()                             : Categoria
+    + getUsuario()                               : Usuario
+    + setMonto(monto: double)                    : void
+    + setDescripcion(descripcion: String)        : void
+    + setFecha(fecha: Date)                      : void
+    + setCategoria(categoria: Categoria)         : void
+    + setUsuario(usuario: Usuario)               : void
+    + toString()                                 : String
 }
 
 ' ======================================================
-'  CLASES CONCRETAS (heredan de Movimiento)
+'  CLASES CONCRETAS
 ' ======================================================
 class Ingreso <<@Entity>> {
     - fuente       : String
     - tipoPago     : String
     - esRecurrente : boolean
-    ..
-    + registrar()            : void
-    + aplicarRecurrencia()   : void
-    + getFuente()            : String
-    + getTipoPago()          : String
-    + isEsRecurrente()       : boolean
+    --
+    + Ingreso()
+    + Ingreso(monto: double, fecha: Date, descripcion: String, categoria: Categoria, usuario: Usuario, fuente: String, tipoPago: String, esRecurrente: boolean)
+    + registrar()                                : void
+    + aplicarRecurrencia()                       : void
+    + getFuente()                                : String
+    + setFuente(fuente: String)                  : void
+    + getTipoPago()                              : String
+    + setTipoPago(tipoPago: String)              : void
+    + isEsRecurrente()                           : boolean
+    + setEsRecurrente(esRecurrente: boolean)     : void
+    + toString()                                 : String
 }
 
 class Gasto <<@Entity>> {
     - tipoPago     : String
     - esRecurrente : boolean
-    ..
-    + registrar()            : void
-    + aplicarRecurrencia()   : void
-    + getTipoPago()          : String
-    + isEsRecurrente()       : boolean
+    --
+    + Gasto()
+    + Gasto(monto: double, fecha: Date, descripcion: String, categoria: Categoria, usuario: Usuario, tipoPago: String, esRecurrente: boolean)
+    + registrar()                                : void
+    + aplicarRecurrencia()                       : void
+    + getTipoPago()                              : String
+    + setTipoPago(tipoPago: String)              : void
+    + isEsRecurrente()                           : boolean
+    + setEsRecurrente(esRecurrente: boolean)     : void
+    + toString()                                 : String
 }
 
 ' ======================================================
@@ -95,40 +117,75 @@ class Usuario <<@Entity>> {
     - password : String
     - nombre   : String
     - estado   : String
-    ..
-    + validarUsername() : boolean
-    + getUsername()     : String
-    + getNombre()       : String
-    + getEstado()       : String
+    --
+    + Usuario()
+    + Usuario(username: String, password: String, nombre: String)
+    + validarUsername()                          : boolean
+    + getId()                                    : Long
+    + getUsername()                              : String
+    + getPassword()                              : String
+    + getNombre()                                : String
+    + getEstado()                                : String
+    + setUsername(username: String)              : void
+    + setPassword(password: String)              : void
+    + setNombre(nombre: String)                  : void
+    + setEstado(estado: String)                  : void
+    + toString()                                 : String
 }
 
 class Categoria <<@Entity>> {
     - id     : Long
     - nombre : String
     - tipo   : String
-    ..
-    + validarNombre() : boolean
-    + validarTipo()   : boolean
-    + getNombre()     : String
-    + getTipo()       : String
+    --
+    + Categoria()
+    + Categoria(nombre: String, tipo: String)
+    + validarNombre()                            : boolean
+    + validarTipo()                              : boolean
+    + getId()                                    : Long
+    + getNombre()                                : String
+    + getTipo()                                  : String
+    + setNombre(nombre: String)                  : void
+    + setTipo(tipo: String)                      : void
+    + toString()                                 : String
 }
 
 class Deuda <<@Entity>> {
-    - id           : Long
-    - persona      : String
-    - monto        : double
-    - montoPagado  : double
-    - descripcion  : String
-    - tipo         : String
-    - tipoPago     : String
-    - estado       : String
-    - fechaRegistro: Date
-    ..
-    + marcarPagada()               : boolean
-    + abonar(monto : double)       : void
-    + getMontoRestante()           : double
-    + validarMonto()               : boolean
-    + validarTipo()                : boolean
+    - id            : Long
+    - persona       : String
+    - monto         : double
+    - descripcion   : String
+    - tipo          : String
+    - tipoPago      : String
+    - estado        : String
+    - montoPagado   : double
+    - fechaRegistro : Date
+    - usuario       : Usuario
+    --
+    + Deuda()
+    + Deuda(persona: String, monto: double, descripcion: String, tipo: String, tipoPago: String, fechaRegistro: Date, usuario: Usuario)
+    + marcarPagada()                             : boolean
+    + abonar(monto: double)                      : void
+    + getMontoPagado()                           : double
+    + getMontoRestante()                         : double
+    + validarMonto()                             : boolean
+    + validarTipo()                              : boolean
+    + getId()                                    : Long
+    + getPersona()                               : String
+    + getMonto()                                 : double
+    + getDescripcion()                           : String
+    + getTipo()                                  : String
+    + getEstado()                                : String
+    + getFechaRegistro()                         : Date
+    + getUsuario()                               : Usuario
+    + getTipoPago()                              : String
+    + setTipoPago(tipoPago: String)              : void
+    + setPersona(persona: String)                : void
+    + setMonto(monto: double)                    : void
+    + setDescripcion(descripcion: String)        : void
+    + setTipo(tipo: String)                      : void
+    + setEstado(estado: String)                  : void
+    + toString()                                 : String
 }
 
 class Ahorro <<@Entity>> {
@@ -137,9 +194,22 @@ class Ahorro <<@Entity>> {
     - porcentaje  : double
     - descripcion : String
     - fecha       : Date
-    ..
-    + getMonto()      : double
-    + getPorcentaje() : double
+    - usuario     : Usuario
+    --
+    + Ahorro()
+    + Ahorro(monto: double, porcentaje: double, descripcion: String, fecha: Date, usuario: Usuario)
+    + getId()                                    : Long
+    + getMonto()                                 : double
+    + setMonto(monto: double)                    : void
+    + getPorcentaje()                            : double
+    + setPorcentaje(porcentaje: double)          : void
+    + getDescripcion()                           : String
+    + setDescripcion(descripcion: String)        : void
+    + getFecha()                                 : Date
+    + setFecha(fecha: Date)                      : void
+    + getUsuario()                               : Usuario
+    + setUsuario(usuario: Usuario)               : void
+    + toString()                                 : String
 }
 
 class MetaAhorro <<@Entity>> {
@@ -147,24 +217,40 @@ class MetaAhorro <<@Entity>> {
     - montoMeta  : double
     - mes        : int
     - anio       : int
-    ..
-    + verificarCumplimiento(balance : double) : boolean
-    + validarMonto()                          : boolean
-    + getMes()                                : int
-    + getAnio()                               : int
+    - usuario    : Usuario
+    --
+    + MetaAhorro()
+    + MetaAhorro(montoMeta: double, mes: int, anio: int, usuario: Usuario)
+    + verificarCumplimiento(balanceDelMes: double) : boolean
+    + validarMonto()                               : boolean
+    + getId()                                      : Long
+    + getMontoMeta()                               : double
+    + getMes()                                     : int
+    + getAnio()                                    : int
+    + getUsuario()                                 : Usuario
+    + setMontoMeta(montoMeta: double)              : void
+    + toString()                                   : String
 }
 
-class ReporteFinanciero <<no@Entity>> {
+class ReporteFinanciero <<no @Entity>> {
     - mes           : int
     - anio          : int
     - totalIngresos : double
     - totalGastos   : double
     - balance       : double
     - nombreUsuario : String
-    ..
-    + calcularBalance()  : double
-    + generarResumen()   : String
-    + toString()         : String
+    --
+    + ReporteFinanciero()
+    + ReporteFinanciero(mes: int, anio: int, totalIngresos: double, totalGastos: double, nombreUsuario: String)
+    + calcularBalance()                            : double
+    + generarResumen()                             : String
+    + getMes()                                     : int
+    + getAnio()                                    : int
+    + getTotalIngresos()                           : double
+    + getTotalGastos()                             : double
+    + getBalance()                                 : double
+    + getNombreUsuario()                           : String
+    + toString()                                   : String
 }
 
 class Menu <<@Entity>> {
@@ -174,37 +260,43 @@ class Menu <<@Entity>> {
     - icono  : String
     - orden  : int
     - padre  : Menu
-    ..
-    + getNombre()           : String
-    + getUrl()              : String
-    + getHijos()            : List<Menu>
+    - hijos  : List<Menu>
+    --
+    + Menu()
+    + Menu(nombre: String, url: String, icono: String, orden: int, padre: Menu)
+    + getId()                                      : Long
+    + getNombre()                                  : String
+    + getUrl()                                     : String
+    + getIcono()                                   : String
+    + getOrden()                                   : int
+    + getPadre()                                   : Menu
+    + getHijos()                                   : List<Menu>
+    + setNombre(nombre: String)                    : void
+    + setUrl(url: String)                          : void
+    + setIcono(icono: String)                      : void
+    + setOrden(orden: int)                         : void
+    + setPadre(padre: Menu)                        : void
+    + setHijos(hijos: List<Menu>)                  : void
 }
 
 ' ======================================================
 '  RELACIONES
 ' ======================================================
-
-' --- HERENCIA (extends) ---
 Movimiento <|-- Ingreso : herencia
 Movimiento <|-- Gasto   : herencia
 
-' --- REALIZACIÓN (implements) ---
 Recurrente <|.. Ingreso : realización
 Recurrente <|.. Gasto   : realización
 
-' --- ASOCIACIÓN: Movimiento → Categoria / Usuario (ManyToOne) ---
 Movimiento "N" --> "1" Categoria : categoría >
 Movimiento "N" --> "1" Usuario   : pertenece a >
 
-' --- ASOCIACIÓN: Deuda / Ahorro / MetaAhorro → Usuario ---
 Deuda      "N" --> "1" Usuario : propietario >
 Ahorro     "N" --> "1" Usuario : propietario >
 MetaAhorro "N" --> "1" Usuario : propietario >
 
-' --- COMPOSICIÓN: Menu (árbol recursivo, CascadeType.ALL) ---
 Menu "1" *-- "0..*" Menu : hijos ▸
 
-' --- DEPENDENCIA: ReporteFinanciero usa datos de Ingreso y Gasto ---
 ReporteFinanciero ..> Ingreso : <<usa>>
 ReporteFinanciero ..> Gasto   : <<usa>>
 
@@ -216,44 +308,41 @@ note top of Movimiento
   Clase abstracta: nunca se instancia directamente.
   registrar() es abstracto, obliga a cada subclase
   a definir su propio comportamiento.
-  @MappedSuperclass → sus campos se mapean en las
+  @MappedSuperclass: sus campos se mapean en las
   tablas ingreso y gasto (no crea tabla propia).
 end note
 
 note right of Ingreso
   <b>HERENCIA + POLIMORFISMO</b>
-  registrar() → "suma al balance del usuario"
+  registrar() suma al balance del usuario.
   Mismo mensaje, implementación propia.
 end note
 
 note right of Gasto
   <b>HERENCIA + POLIMORFISMO</b>
-  registrar() → "resta del balance del usuario"
-  Mismo mensaje, implementación distinta a Ingreso.
+  registrar() resta del balance del usuario.
+  Mismo mensaje, implementación distinta.
 end note
 
 note top of Recurrente
   <b>ABSTRACCIÓN (interfaz)</b>
-  Contrato puro: solo declara qué hay que hacer,
-  no cómo. Permite que Ingreso y Gasto hereden
-  de Movimiento Y cumplan este contrato al mismo
-  tiempo (Java no permite herencia múltiple de clases).
+  Contrato puro: solo declara qué hacer,
+  no cómo. Permite herencia múltiple de
+  comportamiento en Java.
 end note
 
 note bottom of Menu
   <b>COMPOSICIÓN RECURSIVA</b>
   Un Menu tiene 0..N hijos del mismo tipo.
-  Si se elimina el padre, los hijos se eliminan
-  en cascada (CascadeType.ALL).
-  Árbol n-ario de profundidad arbitraria.
+  CascadeType.ALL: si se elimina el padre,
+  los hijos se eliminan en cascada.
 end note
 
 note bottom of ReporteFinanciero
   <b>DEPENDENCIA</b>
-  No es @Entity — no se guarda en BD.
+  No es @Entity — no se persiste en BD.
   Se construye en memoria usando datos
-  de Ingreso y Gasto. Relación de uso,
-  no de pertenencia.
+  de Ingreso y Gasto.
 end note
 
 @enduml

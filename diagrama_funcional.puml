@@ -1,5 +1,4 @@
 @startuml diagrama_funcional
-!theme plain
 
 skinparam backgroundColor #FFFFFF
 skinparam defaultFontName Arial
@@ -9,7 +8,6 @@ skinparam usecase {
     BackgroundColor #EBF5FB
     BorderColor #1A5276
     FontSize 11
-    ArrowColor #2C3E50
 }
 
 skinparam actor {
@@ -25,6 +23,8 @@ skinparam rectangle {
     FontSize 13
     FontStyle bold
 }
+
+skinparam ArrowColor #2C3E50
 
 skinparam note {
     BackgroundColor #FEFBD8
@@ -111,6 +111,11 @@ rectangle "Sistema de Finanzas Personales" {
         usecase "Navegar por el menú\n(cargado desde BD)"  as UC_MENU
     }
 
+    ' --- MÓDULO ACCESO MÓVIL ---
+    package "Accesibilidad" #F0F0F0 {
+        usecase "Acceder desde\ndispositivo móvil\n(sidebar responsive)" as UC_MOVIL
+    }
+
     ' ===================================================
     '  ACCIONES AUTOMÁTICAS DEL SISTEMA
     ' ===================================================
@@ -118,6 +123,7 @@ rectangle "Sistema de Finanzas Personales" {
     usecase "Crear gasto automático\nal abonar deuda"                          as UC_SYS_GAS
     usecase "Verificar cumplimiento\nde meta mensual"                          as UC_SYS_META
     usecase "Poblar tabla menu\nal primer arranque\n(MenuSeeder)"              as UC_SYS_SEED
+    usecase "Desplegar aplicación\nen la nube\n(Render + Vercel + Neon)"       as UC_SYS_DEPLOY
 }
 
 ' ======================================================
@@ -172,6 +178,9 @@ U --> UC_REP
 ' Menú
 U --> UC_MENU
 
+' Móvil
+U --> UC_MOVIL
+
 ' ======================================================
 '  RELACIONES SISTEMA (acciones automáticas)
 ' ======================================================
@@ -179,6 +188,7 @@ S --> UC_SYS_AHO
 S --> UC_SYS_GAS
 S --> UC_SYS_META
 S --> UC_SYS_SEED
+S --> UC_SYS_DEPLOY
 
 ' ======================================================
 '  RELACIONES INCLUDE / EXTEND
@@ -218,6 +228,20 @@ note right of UC_SYS_SEED
   MenuSeeder (CommandLineRunner)
   puebla la tabla 'menu' una sola
   vez al primer arranque del servidor.
+end note
+
+note right of UC_SYS_DEPLOY
+  Backend desplegado en Render (Docker + Java 21).
+  Frontend desplegado en Vercel (Angular SPA).
+  Base de datos en Neon (PostgreSQL serverless).
+  Deploy automático desde rama main en GitHub.
+end note
+
+note right of UC_MOVIL
+  Sidebar con botón hamburguesa (☰).
+  Se oculta/muestra con animación slide.
+  Se cierra al tocar un enlace o el overlay.
+  Topbar fijo visible solo en pantallas móviles.
 end note
 
 @enduml

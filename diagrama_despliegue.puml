@@ -1,5 +1,4 @@
 @startuml diagrama_despliegue
-!theme plain
 
 skinparam backgroundColor #FFFFFF
 skinparam defaultFontName Arial
@@ -30,10 +29,8 @@ skinparam component {
     FontSize 11
 }
 
-skinparam arrow {
-    Color #2C3E50
-    FontSize 10
-}
+skinparam ArrowColor #2C3E50
+skinparam ArrowFontSize 10
 
 skinparam note {
     BackgroundColor #FEFBD8
@@ -44,23 +41,28 @@ skinparam note {
 title <b>Diagrama de Despliegue</b>\nSistema de Finanzas Personales — POO UCC\n
 
 ' ======================================================
-'  NODO 1 — MÁQUINA DEL USUARIO
+'  NODO 1 — DISPOSITIVO DEL USUARIO
 ' ======================================================
-node "PC del Usuario\n«dispositivo cliente»" as cliente {
-
-    component "Navegador Web\n(Chrome / Edge)" as navegador
-
-    artifact  "Angular App (SPA)\nCompilada con ng build\npuerto 4200" as angularApp
-
-    navegador --> angularApp : ejecuta
+node "Dispositivo del Usuario\n«PC / Móvil»" as cliente {
+    component "Navegador Web\n(Chrome / Edge / Mobile)" as navegador
 }
 
 ' ======================================================
-'  NODO 2 — SERVIDOR DE APLICACIÓN
+'  NODO 2 — VERCEL (CDN — Frontend)
 ' ======================================================
-node "Servidor de Aplicación\n«JVM — Java 24»" as servidor {
+node "Vercel\n«CDN Cloud»\nmisfinanzas-jade.vercel.app" as vercel {
+    artifact "Angular SPA\n(ng build --configuration=production)\ndist/finanzasFront/browser" as angularApp
+    artifact "vercel.json\n(rewrites SPA routing)" as vercelJson
+}
 
-    artifact "finanzas.jar\n(Spring Boot 3.4.1)\npuerto 8081" as jar
+' ======================================================
+'  NODO 3 — RENDER (Servidor — Backend)
+' ======================================================
+node "Render\n«Cloud Server — Free Tier»\nfinanzas-api-ns1u.onrender.com" as render {
+
+    artifact "Dockerfile\n(maven:3.9.6-eclipse-temurin-21\n→ eclipse-temurin:21-jre-jammy)" as docker
+
+    artifact "finanzas-0.0.1-SNAPSHOT.jar\n(Spring Boot 3.4.1 — Java 21)" as jar
 
     component "Spring Security\n(JwtFilter + BCrypt)" as security
     component "Capa REST\n(Controllers)" as controllers
@@ -68,6 +70,7 @@ node "Servidor de Aplicación\n«JVM — Java 24»" as servidor {
     component "Acceso a Datos\n(Repositories + JPA)" as repositories
     component "MenuSeeder\n(CommandLineRunner)" as seeder
 
+    docker       --> jar
     jar          --> security
     security     --> controllers
     controllers  --> services
@@ -76,11 +79,11 @@ node "Servidor de Aplicación\n«JVM — Java 24»" as servidor {
 }
 
 ' ======================================================
-'  NODO 3 — SERVIDOR DE BASE DE DATOS
+'  NODO 4 — NEON (Base de Datos en la nube)
 ' ======================================================
-node "Servidor de Base de Datos\n«PostgreSQL 17»" as baseDatos {
+node "Neon\n«Serverless PostgreSQL Cloud»\nep-solitary-unit-apron6f7.neon.tech" as neon {
 
-    database "finanzas_db\npuerto 5432" as db {
+    database "neondb\n(sslmode=require)" as db {
         artifact "tabla: usuario"      as tUsuario
         artifact "tabla: ingreso"      as tIngreso
         artifact "tabla: gasto"        as tGasto
@@ -95,38 +98,41 @@ node "Servidor de Base de Datos\n«PostgreSQL 17»" as baseDatos {
 ' ======================================================
 '  COMUNICACIÓN ENTRE NODOS
 ' ======================================================
-cliente     ..>  servidor   : HTTP / REST (JSON)\nAuthorization: Bearer JWT\npuerto 8081
+cliente  ..>  vercel  : HTTPS\n(solicita la SPA)
 
-servidor    ..>  baseDatos  : JDBC / Hibernate\nddl-auto = update\npuerto 5432
+vercel   ..>  cliente : HTML / CSS / JS\n(Angular compilado)
+
+cliente  ..>  render  : HTTPS / REST (JSON)\nAuthorization: Bearer JWT
+
+render   ..>  cliente : Respuestas JSON\n(entidades / reportes)
+
+render   ..>  neon    : JDBC / Hibernate\n(sslmode=require)\nddl-auto=update
 
 ' ======================================================
 '  NOTAS
 ' ======================================================
-note bottom of cliente
-  El usuario accede desde el navegador.
-  Angular intercepta todas las peticiones
-  y adjunta el JWT automáticamente
-  (AuthInterceptor).
-  Las rutas protegidas redirigen al login
-  si no hay sesión activa (AuthGuard).
+note bottom of vercel
+  Deploy automático desde GitHub (rama main).
+  vercel.json redirige todas las rutas a index.html
+  para soportar el enrutamiento de Angular.
+  Variables de entorno: apiUrl apunta a Render.
 end note
 
-note bottom of servidor
-  Stateless: no guarda sesión en el servidor.
-  Cada petición lleva el JWT en la cabecera.
-  El JwtFilter valida el token antes de
-  llegar a cualquier Controller.
-  Spring Data JPA genera las consultas SQL
-  automáticamente desde los Repository.
+note bottom of render
+  Contenedor Docker con Java 21.
+  Stateless: no guarda sesión en servidor.
+  JwtFilter valida el token en cada petición.
+  Se duerme tras 15 min sin tráfico (free tier).
+  Variables de entorno: DATABASE_URL, JWT_SECRET,
+  DB_USERNAME, DB_PASSWORD, SPRING_PROFILES_ACTIVE=prod.
 end note
 
-note bottom of baseDatos
-  Hibernate crea/actualiza las tablas
-  automáticamente al arrancar (ddl-auto=update).
+note bottom of neon
+  PostgreSQL serverless gratuito (512 MB).
+  Sin vencimiento mientras el proyecto esté activo.
+  Hibernate crea y actualiza las tablas al arrancar.
   ReporteFinanciero NO tiene tabla propia:
-  se calcula en memoria en ReporteService.
-  La tabla menu se puebla una sola vez
-  por MenuSeeder al primer arranque.
+  se genera en memoria bajo demanda.
 end note
 
 @enduml
