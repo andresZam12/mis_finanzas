@@ -1,9 +1,53 @@
-.filtro-mes { display: flex; gap: 8px; align-items: center; }
-.filtro-mes select, .filtro-mes input { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; }
+.filtro-mes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.filtro-mes select,
+.filtro-mes input {
+  padding: 8px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  color: #0f172a;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+.filtro-mes select:focus,
+.filtro-mes input:focus { outline: none; border-color: #6366f1; }
 
-.barra-contenedor { display: flex; flex-direction: column; gap: 12px; }
-.barra-item { display: grid; grid-template-columns: 80px 1fr 140px; align-items: center; gap: 12px; }
-.barra { height: 16px; border-radius: 8px; transition: width 0.4s; min-width: 4px; }
-.barra-verde { background: #22c55e; }
-.barra-roja { background: #ef4444; }
-.accesos-rapidos { display: flex; flex-wrap: wrap; gap: 10px; }
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.card-header-row h3 { font-size: 1rem; font-weight: 700; color: #0f172a; }
+
+.card-titulo { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 16px; }
+
+.seccion-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 14px;
+}
+
+.barra-contenedor { display: flex; flex-direction: column; gap: 16px; }
+.barra-item {
+  display: grid;
+  grid-template-columns: 90px 1fr 160px;
+  align-items: center;
+  gap: 14px;
+}
+.barra-label { font-size: 0.875rem; font-weight: 600; color: #475569; }
+.barra {
+  height: 10px;
+  border-radius: 20px;
+  transition: width 0.5s ease;
+  min-width: 4px;
+}
+.barra-verde { background: linear-gradient(90deg, #10b981, #34d399); }
+.barra-roja  { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+.barra-monto { font-size: 0.875rem; font-weight: 600; color: #475569; text-align: right; }
+
+.accesos-rapidos { display: flex; flex-wrap: wrap; gap: 12px; }

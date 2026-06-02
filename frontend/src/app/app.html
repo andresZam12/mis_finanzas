@@ -1,3 +1,13 @@
+@if (cargando) {
+  <div class="loading-overlay">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p class="loading-title">Conectando...</p>
+      <small class="loading-sub">El servidor puede tardar hasta 30 segundos en el primer acceso</small>
+    </div>
+  </div>
+}
+
 @if (isAuthenticated) {
   <div class="layout">
 

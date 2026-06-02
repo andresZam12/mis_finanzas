@@ -3,9 +3,9 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { MenuService } from './services/menu.service';
+import { LoadingService } from './services/loading.service';
 import { Menu } from './models/menu.model';
 
-// Extiende Menu con estado de expansión local (no va al servidor)
 interface MenuDisplay extends Menu {
   expandido?: boolean;
   hijos: MenuDisplay[];
@@ -23,9 +23,16 @@ export class App implements OnInit, OnDestroy {
   username = '';
   menuItems: MenuDisplay[] = [];
   sidebarAbierto = false;
-  private sub!: Subscription;
+  cargando = false;
 
-  constructor(private authService: AuthService, private menuService: MenuService) {}
+  private sub!: Subscription;
+  private loadingSub!: Subscription;
+
+  constructor(
+    private authService: AuthService,
+    private menuService: MenuService,
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit() {
     this.sub = this.authService.authState$.subscribe(auth => {
@@ -33,6 +40,10 @@ export class App implements OnInit, OnDestroy {
       this.username = this.authService.getUsername();
       if (auth) this.cargarMenus();
       else this.menuItems = [];
+    });
+
+    this.loadingSub = this.loadingService.loading$.subscribe(v => {
+      this.cargando = v;
     });
   }
 
@@ -48,13 +59,13 @@ export class App implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() { this.sub.unsubscribe(); }
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+    this.loadingSub.unsubscribe();
+  }
 
   toggle(item: MenuDisplay) { item.expandido = !item.expandido; }
-
   toggleSidebar() { this.sidebarAbierto = !this.sidebarAbierto; }
-
   cerrarSidebar() { this.sidebarAbierto = false; }
-
   logout() { this.authService.logout(); }
 }
