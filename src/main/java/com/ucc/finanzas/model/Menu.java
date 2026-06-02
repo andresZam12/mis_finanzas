@@ -29,12 +29,15 @@ public class Menu {
     @Column(nullable = false)
     private int orden;
 
-    // @JsonIgnore evita recursion infinita al serializar: el hijo no repite a su padre
+    // @JsonIgnore evita recursion infinita al serializar
+    // un menú no puede tener un padre del mismo tipo, pero sí puede tener hijos del mismo tipo
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "padre_id")
     private Menu padre;
 
+    // pero sí puede tener hijos del mismo tipo
+    
     @OneToMany(mappedBy = "padre", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("orden ASC")
     private List<Menu> hijos = new ArrayList<>();
