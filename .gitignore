@@ -23,7 +23,7 @@ target/
 *.iml
 *.iws
 *.ipr
-out/
+
 
 # ---- IDE — VS Code ----
 .vscode/
@@ -45,5 +45,3 @@ frontend/dist/
 *.log
 logs/
 
-# ---- Diagramas exportados ----
-out/
