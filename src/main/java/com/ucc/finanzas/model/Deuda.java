@@ -46,8 +46,8 @@ public class Deuda {
     @Column(nullable = false, columnDefinition = "double precision default 0")
     private double montoPagado = 0.0;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean recurrente = false;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean recurrente = false;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
@@ -94,7 +94,7 @@ public class Deuda {
 
     public double getMontoPagado() { return montoPagado; }
     public double getMontoRestante() { return this.monto - this.montoPagado; }
-    public boolean isRecurrente() { return recurrente; }
+    public boolean isRecurrente() { return Boolean.TRUE.equals(recurrente); }
     public void setRecurrente(boolean recurrente) { this.recurrente = recurrente; }
 
     public boolean validarMonto() {
