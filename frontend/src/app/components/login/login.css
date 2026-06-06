@@ -22,11 +22,11 @@
 /* Logo como capa de fondo translúcida */
 .login-watermark {
   position: absolute;
-  top: 50%;
+  top: 38%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 95%;
-  opacity: 0.13;
+  width: 155%;
+  opacity: 0.20;
   pointer-events: none;
   user-select: none;
   z-index: 0;
