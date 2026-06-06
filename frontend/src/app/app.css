@@ -29,7 +29,7 @@
 .brand-logo {
   width: 32px;
   height: 32px;
-  background: #1d4ed8;
+  background: #0d9488;
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -82,10 +82,10 @@
 }
 .nav-link:hover { background: #161b27; color: #c9d1d9; }
 .nav-link.activo {
-  background: rgba(29,78,216,.14);
-  color: #60a5fa;
+  background: rgba(13,148,136,.14);
+  color: #2dd4bf;
   font-weight: 600;
-  border-left-color: #2563eb;
+  border-left-color: #0d9488;
 }
 .nav-link.activo .nav-icon { opacity: 1; }
 
@@ -96,7 +96,7 @@
   color: #626f7e;
 }
 .nav-link.hijo:hover { color: #c9d1d9; }
-.nav-link.hijo.activo { padding-left: 32px; color: #60a5fa; font-weight: 600; }
+.nav-link.hijo.activo { padding-left: 32px; color: #2dd4bf; font-weight: 600; }
 
 .nav-grupo {
   display: flex;
@@ -155,7 +155,7 @@
 .user-avatar {
   width: 28px;
   height: 28px;
-  background: #1d4ed8;
+  background: #0d9488;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -226,7 +226,7 @@
   width: 38px;
   height: 38px;
   border: 3px solid #e5e7eb;
-  border-top-color: #2563eb;
+  border-top-color: #0d9488;
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
   margin: 0 auto 18px;

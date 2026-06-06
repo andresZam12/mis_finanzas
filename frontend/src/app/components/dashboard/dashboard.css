@@ -1,3 +1,5 @@
+.page { position: relative; overflow: hidden; }
+
 .filtro-mes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .filtro-mes select,
 .filtro-mes input {
@@ -11,7 +13,18 @@
   font-family: inherit;
 }
 .filtro-mes select:focus,
-.filtro-mes input:focus { outline: none; border-color: #6366f1; }
+.filtro-mes input:focus { outline: none; border-color: #0d9488; }
+
+.marca-agua {
+  position: absolute;
+  bottom: 48px;
+  right: 40px;
+  width: 260px;
+  opacity: 0.045;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
 
 .card-header-row {
   display: flex;
