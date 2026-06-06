@@ -9,6 +9,7 @@ export interface Deuda {
   tipoPago?: string;
   estado: string; // PENDIENTE | PAGADA
   fechaRegistro: string;
+  recurrente: boolean;
   usuario: { id: number; username: string; nombre: string };
 }
 
@@ -18,5 +19,6 @@ export interface DeudaRequest {
   descripcion: string;
   tipo: string;
   tipoPago?: string;
+  recurrente: boolean;
   usuarioId: number;
 }

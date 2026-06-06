@@ -37,6 +37,13 @@
           <option value="OTRO">Otro</option>
         </select>
       </div>
+      <div class="toggle-group">
+        <label class="toggle-row">
+          <input type="checkbox" formControlName="recurrente" />
+          <span>Deuda recurrente</span>
+        </label>
+        <small class="form-hint">Se regenerará automáticamente cada mes al pagarla</small>
+      </div>
       <button type="submit" class="btn btn-primary" [disabled]="form.invalid || cargando">
         {{ cargando ? 'Guardando...' : 'Guardar cambios' }}
       </button>

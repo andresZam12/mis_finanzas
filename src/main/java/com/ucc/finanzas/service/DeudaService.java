@@ -54,6 +54,7 @@ public class DeudaService {
             throw new RuntimeException("El tipo de deuda solo puede ser YO_DEBO o ME_DEBEN.");
         }
 
+        deuda.setRecurrente(request.isRecurrente());
         return deudaRepository.save(deuda);
     }
 
@@ -74,6 +75,7 @@ public class DeudaService {
             throw new RuntimeException("El tipo de deuda solo puede ser YO_DEBO o ME_DEBEN.");
         }
 
+        deuda.setRecurrente(request.isRecurrente());
         return deudaRepository.save(deuda);
     }
 
@@ -86,7 +88,11 @@ public class DeudaService {
             throw new RuntimeException("La deuda ya estaba marcada como PAGADA. No se puede pagar dos veces.");
         }
 
-        return deudaRepository.save(deuda);
+        deudaRepository.save(deuda);
+        if (deuda.isRecurrente()) {
+            regenerar(deuda);
+        }
+        return deuda;
     }
 
     public Deuda abonarDeuda(Long deudaId, double monto) {
@@ -120,8 +126,12 @@ public class DeudaService {
                 false
         );
         gastoRepository.save(gasto);
+        deudaRepository.save(deuda);
 
-        return deudaRepository.save(deuda);
+        if ("PAGADA".equals(deuda.getEstado()) && deuda.isRecurrente()) {
+            regenerar(deuda);
+        }
+        return deuda;
     }
 
     public void eliminarDeuda(Long id) {
@@ -146,6 +156,20 @@ public class DeudaService {
 
     public List<Deuda> listarPorTipo(Long usuarioId, String tipo) {
         return deudaRepository.findByUsuarioIdAndTipo(usuarioId, tipo.toUpperCase());
+    }
+
+    private void regenerar(Deuda origen) {
+        Deuda nueva = new Deuda(
+                origen.getPersona(),
+                origen.getMonto(),
+                origen.getDescripcion(),
+                origen.getTipo(),
+                origen.getTipoPago(),
+                new Date(),
+                origen.getUsuario()
+        );
+        nueva.setRecurrente(true);
+        deudaRepository.save(nueva);
     }
 
     private String normalizarTipoPago(String tipoPago) {

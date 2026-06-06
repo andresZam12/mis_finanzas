@@ -28,7 +28,8 @@ export class EditDeudaComponent implements OnInit {
       monto: ['', [Validators.required, Validators.min(1)]],
       descripcion: ['', Validators.required],
       tipo: ['YO_DEBO', Validators.required],
-      tipoPago: ['']
+      tipoPago: [''],
+      recurrente: [false]
     });
   }
 
@@ -37,7 +38,7 @@ export class EditDeudaComponent implements OnInit {
     this.deudaService.listarPorUsuario(this.authService.getUsuarioId()).subscribe({
       next: deudas => {
         const d = deudas.find(x => x.id === this.id);
-        if (d) this.form.patchValue({ persona: d.persona, monto: d.monto, descripcion: d.descripcion, tipo: d.tipo, tipoPago: d.tipoPago || '' });
+        if (d) this.form.patchValue({ persona: d.persona, monto: d.monto, descripcion: d.descripcion, tipo: d.tipo, tipoPago: d.tipoPago || '', recurrente: d.recurrente });
         else this.error = 'Deuda no encontrada.';
       }
     });
@@ -53,6 +54,7 @@ export class EditDeudaComponent implements OnInit {
       descripcion: val.descripcion,
       tipo: val.tipo,
       tipoPago: val.tipoPago || undefined,
+      recurrente: val.recurrente,
       usuarioId: this.authService.getUsuarioId()
     }).subscribe({
       next: () => this.router.navigate(['/deudas']),

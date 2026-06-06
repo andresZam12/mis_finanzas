@@ -12,6 +12,7 @@ public class DeudaRequest {
     private String tipo;
     private String tipoPago;
     private Long usuarioId;
+    private boolean recurrente;
 
     public DeudaRequest() {
     }
@@ -58,4 +59,7 @@ public class DeudaRequest {
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
     }
+
+    public boolean isRecurrente() { return recurrente; }
+    public void setRecurrente(boolean recurrente) { this.recurrente = recurrente; }
 }

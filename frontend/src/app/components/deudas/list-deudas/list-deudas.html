@@ -24,7 +24,12 @@
         <tbody>
           @for (d of deudas; track d.id) {
             <tr>
-              <td><strong>{{ d.persona }}</strong></td>
+              <td>
+                <strong>{{ d.persona }}</strong>
+                @if (d.recurrente) {
+                  <span class="badge badge-blue" style="margin-left:6px;font-size:0.68rem">↻ Recurrente</span>
+                }
+              </td>
               <td>{{ d.descripcion }}</td>
               <td>
                 <span class="badge" [class.badge-red]="d.tipo === 'YO_DEBO'" [class.badge-blue]="d.tipo === 'ME_DEBEN'">

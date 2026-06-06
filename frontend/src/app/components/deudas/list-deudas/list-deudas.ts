@@ -37,11 +37,7 @@ export class ListDeudasComponent implements OnInit {
   marcarPagada(id: number) {
     this.marcandoId = id;
     this.deudaService.marcarPagada(id).subscribe({
-      next: deuda => {
-        const idx = this.deudas.findIndex(d => d.id === id);
-        if (idx !== -1) this.deudas[idx] = deuda;
-        this.marcandoId = null;
-      },
+      next: () => { this.marcandoId = null; this.cargar(); },
       error: () => { this.marcandoId = null; }
     });
   }
@@ -67,12 +63,11 @@ export class ListDeudasComponent implements OnInit {
     this.abonando = true;
     this.abonarError = '';
     this.deudaService.abonar(id, monto).subscribe({
-      next: deuda => {
-        const idx = this.deudas.findIndex(d => d.id === id);
-        if (idx !== -1) this.deudas[idx] = deuda;
+      next: () => {
         this.abonarId = null;
         this.montoAbono = null;
         this.abonando = false;
+        this.cargar();
       },
       error: (err: any) => {
         this.abonarError = err.error || 'Error al registrar el abono.';

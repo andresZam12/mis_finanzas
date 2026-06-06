@@ -250,6 +250,25 @@ body {
 .monto-positivo { color: var(--success-dark); font-weight: 600; }
 .monto-negativo { color: var(--danger);       font-weight: 600; }
 
+/* ---- Toggle checkbox ---- */
+.toggle-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 5px; }
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggle-row span { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+.form-hint { font-size: 0.78rem; color: var(--text-muted); }
+
 /* ---- Tabla wrapper responsive ---- */
 .tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
