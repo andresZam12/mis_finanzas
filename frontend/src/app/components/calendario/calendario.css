@@ -1,0 +1,197 @@
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.cal-nav h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 220px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.cal-loading {
+  text-align: center;
+  padding: 80px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ---- Layout ---- */
+.cal-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.cal-wrapper { padding: 0; overflow: hidden; }
+
+/* ---- Grid ---- */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.cal-header-cell {
+  background: #f8fafc;
+  padding: 11px 0;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.cal-cell {
+  background: #fff;
+  min-height: 88px;
+  padding: 10px 10px 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+.cal-cell:hover { background: #f8fafc; }
+
+/* Barra de color arriba de la celda cuando hay reporte */
+.cal-cell-positivo::before,
+.cal-cell-negativo::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.cal-cell-positivo::before { background: var(--success); }
+.cal-cell-negativo::before { background: var(--danger); }
+
+.cal-cell-otro-mes {
+  background: #fafafa;
+  cursor: default;
+}
+.cal-cell-otro-mes:hover { background: #fafafa; }
+.cal-cell-otro-mes .cal-dia-num { color: var(--text-muted); opacity: 0.4; }
+
+.cal-cell-hoy .cal-dia-num {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+}
+
+.cal-cell-seleccionado {
+  background: rgba(99,102,241,0.07) !important;
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.cal-dia-num {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cal-indicadores { display: flex; flex-direction: column; gap: 1px; }
+.cal-ind-ing  { font-size: 0.67rem; color: var(--success-dark); font-weight: 600; }
+.cal-ind-gasto{ font-size: 0.67rem; color: var(--danger);       font-weight: 600; }
+
+/* ---- Detalle panel ---- */
+.cal-detalle { padding: 22px; }
+
+.detalle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.detalle-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.detalle-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.detalle-stat {
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  padding: 11px 12px;
+}
+.detalle-stat-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+.detalle-stat-value { font-size: 0.95rem; font-weight: 700; }
+
+.seccion-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.detalle-lista { display: flex; flex-direction: column; gap: 6px; }
+.detalle-mov {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.83rem;
+  gap: 8px;
+}
+.detalle-mov-ingreso { background: #d1fae5; }
+.detalle-mov-gasto   { background: #ffe4e6; }
+.detalle-mov-info    { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; }
+.detalle-mov-tipo    { font-size: 0.95rem; flex-shrink: 0; }
+.detalle-mov-desc    { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detalle-mov-monto   { font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+
+.sin-texto {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-top: 18px;
+  text-align: center;
+}
+.sin-reporte {
+  text-align: center;
+  padding: 28px 12px;
+  color: var(--text-muted);
+}
+.sin-reporte-icon { font-size: 2.2rem; display: block; margin-bottom: 10px; }
+.sin-reporte p    { font-size: 0.9rem; margin-bottom: 6px; }
+.sin-reporte small{ font-size: 0.78rem; }
+
+/* ---- Responsive ---- */
+@media (max-width: 960px) {
+  .cal-layout { grid-template-columns: 1fr; }
+  .cal-detalle { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .cal-cell { min-height: 58px; padding: 6px 5px; }
+  .cal-ind-ing, .cal-ind-gasto { display: none; }
+  .cal-nav h2 { font-size: 1.1rem; min-width: 160px; }
+  .cal-header-cell { padding: 8px 0; font-size: 0.62rem; }
+}

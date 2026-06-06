@@ -248,3 +248,54 @@ body {
 /* ---- Montos en tablas ---- */
 .monto-positivo { color: var(--success-dark); font-weight: 600; }
 .monto-negativo { color: var(--danger);       font-weight: 600; }
+
+/* ---- Tabla wrapper responsive ---- */
+.tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ========================================================
+   RESPONSIVE — MÓVIL
+   ======================================================== */
+
+@media (max-width: 768px) {
+  .page { padding: 16px 14px; }
+
+  .page-header { margin-bottom: 18px; }
+  .page-header h2 { font-size: 1.3rem; }
+
+  /* Formularios táctiles */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+
+  /* Botones táctiles */
+  .btn { min-height: 44px; padding: 10px 16px; font-size: 0.875rem; }
+  .btn-sm { min-height: 38px; padding: 8px 14px; }
+
+  /* Stats grid 2 columnas en tablet-móvil */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .stat-value { font-size: 1.35rem; }
+  .stat-icon { font-size: 1.3rem; margin-bottom: 6px; }
+
+  /* Cards */
+  .card { padding: 16px; border-radius: var(--radius); }
+
+  /* Tablas con scroll horizontal */
+  .tabla th { padding: 8px 12px; font-size: 0.68rem; }
+  .tabla td { padding: 10px 12px; font-size: 0.85rem; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 12px 10px; }
+
+  /* Stats en una columna en pantallas muy pequeñas */
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-value { font-size: 1.5rem; }
+
+  /* Ocultar columnas secundarias de tablas en pantallas muy pequeñas */
+  .tabla-hide-xs { display: none; }
+
+  .page-header { flex-direction: column; align-items: flex-start; }
+}

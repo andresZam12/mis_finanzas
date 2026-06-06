@@ -1,0 +1,121 @@
+<div class="page">
+  <div class="page-header">
+    <div class="cal-nav">
+      <button class="btn btn-secondary btn-sm" (click)="mesAnterior()">&#8249;</button>
+      <h2>{{ tituloMes }}</h2>
+      <button class="btn btn-secondary btn-sm" (click)="mesSiguiente()">&#8250;</button>
+    </div>
+    <button class="btn btn-primary" (click)="generarHoy()" [disabled]="generando">
+      {{ generando ? 'Generando...' : 'Generar reporte de hoy' }}
+    </button>
+  </div>
+
+  @if (exito) {
+    <div class="alerta alerta-exito">&#10003; {{ exito }}</div>
+  }
+  @if (error) {
+    <div class="alerta alerta-error">&#10007; {{ error }}</div>
+  }
+
+  @if (cargando) {
+    <div class="cal-loading">Cargando calendario...</div>
+  } @else {
+    <div class="cal-layout">
+
+      <div class="card cal-wrapper">
+        <div class="cal-grid">
+          @for (d of nombresDias; track d) {
+            <div class="cal-header-cell">{{ d }}</div>
+          }
+          @for (dia of dias; track $index) {
+            <div class="cal-cell"
+                 [class.cal-cell-otro-mes]="!dia.esDelMes"
+                 [class.cal-cell-hoy]="dia.esHoy"
+                 [class.cal-cell-positivo]="dia.reporte && balance(dia.reporte) >= 0"
+                 [class.cal-cell-negativo]="dia.reporte && balance(dia.reporte) < 0"
+                 [class.cal-cell-seleccionado]="diaSeleccionado === dia"
+                 (click)="seleccionarDia(dia)">
+              <span class="cal-dia-num">{{ dia.dia }}</span>
+              @if (dia.reporte) {
+                <div class="cal-indicadores">
+                  <span class="cal-ind-ing">+{{ dia.reporte.totalIngresos | number:'1.0-0' }}</span>
+                  <span class="cal-ind-gasto">-{{ dia.reporte.totalEgresos | number:'1.0-0' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (diaSeleccionado) {
+        <div class="card cal-detalle">
+          <div class="detalle-header">
+            <h3>{{ diaSeleccionado.dia }} de {{ tituloMes }}</h3>
+            <button class="btn btn-secondary btn-sm" (click)="cerrarDetalle()">&#10005;</button>
+          </div>
+
+          @if (diaSeleccionado.reporte) {
+            <div class="detalle-stats">
+              <div class="detalle-stat">
+                <span class="detalle-stat-label">Ingresos</span>
+                <span class="detalle-stat-value monto-positivo">
+                  ${{ diaSeleccionado.reporte.totalIngresos | number:'1.0-0' }}
+                </span>
+              </div>
+              <div class="detalle-stat">
+                <span class="detalle-stat-label">Egresos</span>
+                <span class="detalle-stat-value monto-negativo">
+                  ${{ diaSeleccionado.reporte.totalEgresos | number:'1.0-0' }}
+                </span>
+              </div>
+              <div class="detalle-stat">
+                <span class="detalle-stat-label">Ahorros</span>
+                <span class="detalle-stat-value stat-neutral">
+                  ${{ diaSeleccionado.reporte.totalAhorro | number:'1.0-0' }}
+                </span>
+              </div>
+              <div class="detalle-stat">
+                <span class="detalle-stat-label">Balance</span>
+                <span class="detalle-stat-value"
+                      [class.monto-positivo]="balance(diaSeleccionado.reporte) >= 0"
+                      [class.monto-negativo]="balance(diaSeleccionado.reporte) < 0">
+                  ${{ balance(diaSeleccionado.reporte) | number:'1.0-0' }}
+                </span>
+              </div>
+            </div>
+
+            @if (movimientosDetalle.length > 0) {
+              <p class="seccion-label" style="margin-top:20px">Movimientos</p>
+              <div class="detalle-lista">
+                @for (m of movimientosDetalle; track $index) {
+                  <div class="detalle-mov"
+                       [class.detalle-mov-ingreso]="m.tipo === 'ingreso'"
+                       [class.detalle-mov-gasto]="m.tipo === 'gasto'">
+                    <div class="detalle-mov-info">
+                      <span class="detalle-mov-tipo">{{ m.tipo === 'ingreso' ? '↑' : '↓' }}</span>
+                      <span class="detalle-mov-desc">{{ m.descripcion || m.fuente || '—' }}</span>
+                    </div>
+                    <span class="detalle-mov-monto"
+                          [class.monto-positivo]="m.tipo === 'ingreso'"
+                          [class.monto-negativo]="m.tipo === 'gasto'">
+                      ${{ m.monto | number:'1.0-0' }}
+                    </span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="sin-texto">Sin movimientos registrados ese día.</p>
+            }
+          } @else {
+            <div class="sin-reporte">
+              <span class="sin-reporte-icon">&#128237;</span>
+              <p>Sin reporte para este día.</p>
+              <small>Los reportes se generan automáticamente a las 23:59 o manualmente con el botón de arriba.</small>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  }
+</div>

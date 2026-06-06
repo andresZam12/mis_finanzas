@@ -26,14 +26,12 @@ export const routes: Routes = [
   { path: 'deudas/nueva', canActivate: [authGuard], loadComponent: () => import('./components/deudas/create-deuda/create-deuda').then(m => m.CreateDeudaComponent) },
   { path: 'deudas/:id/editar', canActivate: [authGuard], loadComponent: () => import('./components/deudas/edit-deuda/edit-deuda').then(m => m.EditDeudaComponent) },
 
-  // Metas
-  { path: 'metas', canActivate: [authGuard], loadComponent: () => import('./components/metas/list-metas/list-metas').then(m => m.ListMetasComponent) },
-  { path: 'metas/mes', canActivate: [authGuard], loadComponent: () => import('./components/metas/meta-mes/meta-mes').then(m => m.MetaMesComponent) },
-  { path: 'metas/nueva', canActivate: [authGuard], loadComponent: () => import('./components/metas/create-meta/create-meta').then(m => m.CreateMetaComponent) },
-
   // Ahorros
   { path: 'ahorros', canActivate: [authGuard], loadComponent: () => import('./components/ahorros/list-ahorros/list-ahorros').then(m => m.ListAhorrosComponent) },
   { path: 'ahorros/nuevo', canActivate: [authGuard], loadComponent: () => import('./components/ahorros/create-ahorro/create-ahorro').then(m => m.CreateAhorroComponent) },
+
+  // Calendario diario
+  { path: 'calendario', canActivate: [authGuard], loadComponent: () => import('./components/calendario/calendario').then(m => m.CalendarioComponent) },
 
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];
