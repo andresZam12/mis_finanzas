@@ -1,18 +1,18 @@
 <div class="login-page">
-
-  <img src="/logo.png" alt="MI$ FINANZAS" class="login-logo" />
-
   <div class="login-card">
+
+    <img src="/logo.png" alt="" class="login-watermark" aria-hidden="true" />
+
     <div class="login-header">
       <h1>Inicia sesión</h1>
       <p>Bienvenido de vuelta</p>
     </div>
 
     @if (error) {
-      <div class="alerta alerta-error">{{ error }}</div>
+      <div class="alerta alerta-error login-alerta">{{ error }}</div>
     }
 
-    <form [formGroup]="form" (ngSubmit)="enviar()">
+    <form [formGroup]="form" (ngSubmit)="enviar()" class="login-form">
       <div class="form-group">
         <label>Usuario</label>
         <input type="text" formControlName="username" placeholder="Tu usuario" autocomplete="username" />
@@ -29,6 +29,6 @@
     <p class="login-footer">
       ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
     </p>
-  </div>
 
+  </div>
 </div>
