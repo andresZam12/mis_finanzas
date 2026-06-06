@@ -65,7 +65,7 @@
 }
 
 .login-card .form-group input {
-  background: #161b27;
+  background: transparent;
   border-color: #30363d;
   color: #e6edf3;
 }
@@ -77,7 +77,7 @@
 .login-card .form-group input:focus {
   border-color: #0d9488;
   box-shadow: 0 0 0 3px rgba(13,148,136,.18);
-  background: #161b27;
+  background: transparent;
 }
 
 .login-btn {
