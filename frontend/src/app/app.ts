@@ -50,11 +50,13 @@ export class App implements OnInit, OnDestroy {
   cargarMenus() {
     this.menuService.listar().subscribe({
       next: menus => {
-        this.menuItems = menus.map(m => ({
-          ...m,
-          expandido: true,
-          hijos: m.hijos as MenuDisplay[]
-        }));
+        this.menuItems = menus
+          .filter(m => m.nombre !== 'Metas')
+          .map(m => ({
+            ...m,
+            expandido: true,
+            hijos: m.hijos as MenuDisplay[]
+          }));
       }
     });
   }
