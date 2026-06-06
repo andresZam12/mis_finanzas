@@ -2,8 +2,8 @@
   <div class="loading-overlay">
     <div class="loading-box">
       <div class="spinner"></div>
-      <p class="loading-title">Conectando...</p>
-      <small class="loading-sub">El servidor puede tardar hasta 30 segundos en el primer acceso</small>
+      <p class="loading-title">Conectando con el servidor</p>
+      <small class="loading-sub">El primer acceso puede tardar hasta 30 segundos</small>
     </div>
   </div>
 }
@@ -12,8 +12,12 @@
   <div class="layout">
 
     <div class="topbar-mobile">
-      <button class="btn-hamburger" (click)="toggleSidebar()">☰</button>
-      <span class="topbar-titulo">💰 Finanzas</span>
+      <button class="btn-hamburger" (click)="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <span class="topbar-titulo">Finanzas Personales</span>
     </div>
 
     @if (sidebarAbierto) {
@@ -22,9 +26,13 @@
 
     <aside class="sidebar" [class.abierto]="sidebarAbierto">
       <div class="sidebar-brand">
-        <span class="brand-icon">💰</span>
+        <div class="brand-logo">FP</div>
         <span class="brand-name">Finanzas</span>
-        <button class="btn-cerrar-sidebar" (click)="cerrarSidebar()">✕</button>
+        <button class="btn-cerrar-sidebar" (click)="cerrarSidebar()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
 
       <nav class="sidebar-nav">
@@ -32,14 +40,20 @@
           @if (item.hijos && item.hijos.length > 0) {
             <div class="nav-group">
               <button class="nav-grupo" (click)="toggle(item)">
-                <span>{{ item.icono }} {{ item.nombre }}</span>
-                <span class="flecha">{{ item.expandido ? '▾' : '▸' }}</span>
+                <div class="nav-grupo-left">
+                  <span class="nav-icon" [innerHTML]="icono(item.nombre)"></span>
+                  <span>{{ item.nombre }}</span>
+                </div>
+                <svg class="flecha" [class.rotado]="item.expandido" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
               </button>
               @if (item.expandido) {
                 <div class="nav-hijos">
                   @for (hijo of item.hijos; track hijo.id) {
                     <a [routerLink]="hijo.url" routerLinkActive="activo" class="nav-link hijo" (click)="cerrarSidebar()">
-                      {{ hijo.icono }} {{ hijo.nombre }}
+                      <span class="nav-icon" [innerHTML]="icono(hijo.nombre)"></span>
+                      <span>{{ hijo.nombre }}</span>
                     </a>
                   }
                 </div>
@@ -47,15 +61,26 @@
             </div>
           } @else {
             <a [routerLink]="item.url" routerLinkActive="activo" class="nav-link" (click)="cerrarSidebar()">
-              {{ item.icono }} {{ item.nombre }}
+              <span class="nav-icon" [innerHTML]="icono(item.nombre)"></span>
+              <span>{{ item.nombre }}</span>
             </a>
           }
         }
       </nav>
 
       <div class="sidebar-footer">
-        <span class="sidebar-user">👤 {{ username }}</span>
-        <button class="btn-logout" (click)="logout()">Salir</button>
+        <div class="sidebar-user">
+          <div class="user-avatar">{{ iniciales }}</div>
+          <span class="user-name">{{ username }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" x2="9" y1="12" y2="12"/>
+          </svg>
+          Salir
+        </button>
       </div>
     </aside>
 

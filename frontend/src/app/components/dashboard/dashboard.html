@@ -14,7 +14,6 @@
 
   <div class="stats-grid">
     <div class="stat-card card-balance">
-      <span class="stat-icon">💰</span>
       <div class="stat-label">Balance total</div>
       <div class="stat-value" [class.stat-positive]="(balanceTotal ?? 0) >= 0" [class.stat-negative]="(balanceTotal ?? 0) < 0">
         {{ balanceTotal !== null ? (balanceTotal | currency:'COP':'symbol-narrow':'1.0-0') : '—' }}
@@ -22,7 +21,6 @@
     </div>
 
     <div class="stat-card card-ahorros">
-      <span class="stat-icon">🏦</span>
       <div class="stat-label">Total ahorrado</div>
       <div class="stat-value stat-positive">
         {{ totalAhorros !== null ? (totalAhorros | currency:'COP':'symbol-narrow':'1.0-0') : '—' }}
@@ -31,19 +29,16 @@
 
     @if (reporte) {
       <div class="stat-card card-ingresos">
-        <span class="stat-icon">📈</span>
         <div class="stat-label">Ingresos {{ nombreMes }}</div>
         <div class="stat-value stat-positive">{{ reporte.totalIngresos | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
       </div>
 
       <div class="stat-card card-gastos">
-        <span class="stat-icon">📉</span>
         <div class="stat-label">Gastos {{ nombreMes }}</div>
         <div class="stat-value stat-negative">{{ reporte.totalGastos | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
       </div>
 
       <div class="stat-card card-balance-mes">
-        <span class="stat-icon">⚖️</span>
         <div class="stat-label">Balance {{ nombreMes }}</div>
         <div class="stat-value" [class.stat-positive]="reporte.balance >= 0" [class.stat-negative]="reporte.balance < 0">
           {{ reporte.balance | currency:'COP':'symbol-narrow':'1.0-0' }}
@@ -53,7 +48,7 @@
   </div>
 
   @if (cargando) {
-    <div class="alerta alerta-info">⏳ Cargando reporte...</div>
+    <div class="alerta alerta-info">Cargando reporte...</div>
   } @else if (error) {
     <div class="alerta alerta-error">{{ error }}</div>
   } @else if (reporte) {
@@ -108,9 +103,9 @@
   <div style="margin-top:24px">
     <p class="seccion-label">Acciones rápidas</p>
     <div class="accesos-rapidos">
-      <a routerLink="/movimientos/nuevo-ingreso" class="btn btn-success">📈 Registrar ingreso</a>
-      <a routerLink="/movimientos/nuevo-gasto"   class="btn btn-danger">📉 Registrar gasto</a>
-      <a routerLink="/deudas/nueva"              class="btn btn-secondary">🤝 Nueva deuda</a>
+      <a routerLink="/movimientos/nuevo-ingreso" class="btn btn-success">Registrar ingreso</a>
+      <a routerLink="/movimientos/nuevo-gasto"   class="btn btn-danger">Registrar gasto</a>
+      <a routerLink="/deudas/nueva"              class="btn btn-secondary">Nueva deuda</a>
     </div>
   </div>
 </div>
