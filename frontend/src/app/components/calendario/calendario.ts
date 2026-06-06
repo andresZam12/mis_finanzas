@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ReporteDiarioService } from '../../services/reporte-diario.service';
 import { ReporteDiario } from '../../models/reporte-diario.model';
@@ -22,7 +22,7 @@ interface DiaCalendario {
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [CurrencyPipe, NgClass],
+  imports: [CurrencyPipe, DecimalPipe, NgClass],
   templateUrl: './calendario.html',
   styleUrl: './calendario.css'
 })
