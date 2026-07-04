@@ -28,4 +28,6 @@ public interface IngresoRepository extends JpaRepository<Ingreso, Long> {
      * Usado por ReporteDiarioService para construir el snapshot diario.
      */
     List<Ingreso> findByUsuarioIdAndFecha(Long usuarioId, Date fecha);
+
+    List<Ingreso> findByUsuarioIdAndFechaBetween(Long usuarioId, Date inicio, Date fin);
 }

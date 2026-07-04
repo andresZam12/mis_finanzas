@@ -53,7 +53,7 @@ export class CalendarioComponent implements OnInit {
     this.error = '';
     this.diaSeleccionado = null;
     const uid = this.authService.getUsuarioId();
-    this.reporteDiarioService.listarPorMes(uid, this.anio, this.mes).subscribe({
+    this.reporteDiarioService.calcularPorMes(uid, this.anio, this.mes).subscribe({
       next: reportes => { this.construirCalendario(reportes); this.cargando = false; },
       error: () => { this.construirCalendario([]); this.cargando = false; }
     });

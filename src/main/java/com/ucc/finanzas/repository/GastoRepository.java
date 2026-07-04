@@ -28,4 +28,6 @@ public interface GastoRepository extends JpaRepository<Gasto, Long> {
      * Usado por ReporteDiarioService para construir el snapshot diario.
      */
     List<Gasto> findByUsuarioIdAndFecha(Long usuarioId, Date fecha);
+
+    List<Gasto> findByUsuarioIdAndFechaBetween(Long usuarioId, Date inicio, Date fin);
 }

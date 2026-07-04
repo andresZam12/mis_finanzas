@@ -16,6 +16,12 @@ export class ReporteDiarioService {
     });
   }
 
+  calcularPorMes(usuarioId: number, anio: number, mes: number): Observable<ReporteDiario[]> {
+    return this.http.get<ReporteDiario[]>(`${this.apiUrl}/${usuarioId}/mes-calculado`, {
+      params: { anio: anio.toString(), mes: mes.toString() }
+    });
+  }
+
   generarHoy(usuarioId: number): Observable<ReporteDiario> {
     return this.http.post<ReporteDiario>(`${this.apiUrl}/generar/${usuarioId}`, {});
   }

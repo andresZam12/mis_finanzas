@@ -9,4 +9,6 @@ import java.util.List;
 public interface AhorroRepository extends JpaRepository<Ahorro, Long> {
     List<Ahorro> findByUsuarioId(Long usuarioId);
     List<Ahorro> findByUsuarioIdAndFecha(Long usuarioId, Date fecha);
+
+    List<Ahorro> findByUsuarioIdAndFechaBetween(Long usuarioId, Date inicio, Date fin);
 }

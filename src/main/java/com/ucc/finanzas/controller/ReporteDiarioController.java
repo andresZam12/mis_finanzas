@@ -30,6 +30,14 @@ public class ReporteDiarioController {
         return ResponseEntity.ok(reporteDiarioService.listarPorMes(usuarioId, anio, mes));
     }
 
+    @GetMapping("/{usuarioId}/mes-calculado")
+    public ResponseEntity<List<ReporteDiario>> calcularMes(
+            @PathVariable Long usuarioId,
+            @RequestParam int anio,
+            @RequestParam int mes) {
+        return ResponseEntity.ok(reporteDiarioService.calcularMes(usuarioId, anio, mes));
+    }
+
     @PostMapping("/generar/{usuarioId}")
     public ResponseEntity<?> generar(@PathVariable Long usuarioId) {
         try {
