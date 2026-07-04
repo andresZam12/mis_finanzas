@@ -4,10 +4,12 @@ import com.ucc.finanzas.dto.DeudaRequest;
 import com.ucc.finanzas.model.Categoria;
 import com.ucc.finanzas.model.Deuda;
 import com.ucc.finanzas.model.Gasto;
+import com.ucc.finanzas.model.Ingreso;
 import com.ucc.finanzas.model.Usuario;
 import com.ucc.finanzas.repository.CategoriaRepository;
 import com.ucc.finanzas.repository.DeudaRepository;
 import com.ucc.finanzas.repository.GastoRepository;
+import com.ucc.finanzas.repository.IngresoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -21,15 +23,18 @@ public class DeudaService {
 
     private final DeudaRepository deudaRepository;
     private final GastoRepository gastoRepository;
+    private final IngresoRepository ingresoRepository;
     private final CategoriaRepository categoriaRepository;
     private final AuthService authService;
 
     public DeudaService(DeudaRepository deudaRepository,
                         GastoRepository gastoRepository,
+                        IngresoRepository ingresoRepository,
                         CategoriaRepository categoriaRepository,
                         AuthService authService) {
         this.deudaRepository = deudaRepository;
         this.gastoRepository = gastoRepository;
+        this.ingresoRepository = ingresoRepository;
         this.categoriaRepository = categoriaRepository;
         this.authService = authService;
     }
@@ -89,6 +94,7 @@ public class DeudaService {
         }
 
         deudaRepository.save(deuda);
+        registrarMovimientoPago(deuda, deuda.getMonto(), "Pago deuda");
         if (deuda.isRecurrente()) {
             regenerar(deuda);
         }
@@ -111,21 +117,7 @@ public class DeudaService {
         }
 
         deuda.abonar(monto);
-
-        List<Categoria> categorias = categoriaRepository.findByTipo("GASTO");
-        if (categorias.isEmpty()) {
-            throw new RuntimeException("Debe crear al menos una categoría de tipo GASTO para registrar el abono.");
-        }
-        Gasto gasto = new Gasto(
-                monto,
-                new Date(),
-                "Abono deuda (" + deuda.getPersona() + "): " + deuda.getDescripcion(),
-                categorias.get(0),
-                deuda.getUsuario(),
-                deuda.getTipoPago() != null ? deuda.getTipoPago() : "OTRO",
-                false
-        );
-        gastoRepository.save(gasto);
+        registrarMovimientoPago(deuda, monto, "Abono deuda");
         deudaRepository.save(deuda);
 
         if ("PAGADA".equals(deuda.getEstado()) && deuda.isRecurrente()) {
@@ -170,6 +162,28 @@ public class DeudaService {
         );
         nueva.setRecurrente(true);
         deudaRepository.save(nueva);
+    }
+
+    // YO_DEBO → pago sale de mi bolsillo → Gasto; ME_DEBEN → cobro recibido → Ingreso
+    private void registrarMovimientoPago(Deuda deuda, double monto, String prefijo) {
+        String desc = prefijo + " (" + deuda.getPersona() + ")"
+                + (deuda.getDescripcion() != null && !deuda.getDescripcion().isEmpty()
+                   ? ": " + deuda.getDescripcion() : "");
+        String tipoPago = deuda.getTipoPago() != null ? deuda.getTipoPago() : "OTRO";
+
+        if ("YO_DEBO".equals(deuda.getTipo())) {
+            List<Categoria> cats = categoriaRepository.findByTipo("GASTO");
+            if (cats.isEmpty()) return;
+            Gasto gasto = new Gasto(monto, new Date(), desc, cats.get(0),
+                    deuda.getUsuario(), tipoPago, false);
+            gastoRepository.save(gasto);
+        } else {
+            List<Categoria> cats = categoriaRepository.findByTipo("INGRESO");
+            if (cats.isEmpty()) return;
+            Ingreso ingreso = new Ingreso(monto, new Date(), desc, cats.get(0),
+                    deuda.getUsuario(), deuda.getPersona(), tipoPago, false);
+            ingresoRepository.save(ingreso);
+        }
     }
 
     private String normalizarTipoPago(String tipoPago) {
