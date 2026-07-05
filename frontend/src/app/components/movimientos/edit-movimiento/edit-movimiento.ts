@@ -33,7 +33,6 @@ export class EditMovimientoComponent implements OnInit {
       monto: ['', [Validators.required, Validators.min(1)]],
       descripcion: ['', Validators.required],
       categoriaId: ['', Validators.required],
-      fuente: [''],
       tipoPago: [''],
       esRecurrente: [false]
     });
@@ -65,7 +64,6 @@ export class EditMovimientoComponent implements OnInit {
           monto: m.monto,
           descripcion: m.descripcion,
           categoriaId: m.categoria?.id,
-          fuente: m.fuente || '',
           tipoPago: m.tipoPago || '',
           esRecurrente: m.esRecurrente
         });
@@ -83,7 +81,6 @@ export class EditMovimientoComponent implements OnInit {
       descripcion: val.descripcion,
       categoriaId: Number(val.categoriaId),
       usuarioId: this.authService.getUsuarioId(),
-      fuente: val.fuente || undefined,
       tipoPago: val.tipoPago || undefined,
       esRecurrente: val.esRecurrente
     };

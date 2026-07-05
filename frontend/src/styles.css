@@ -269,6 +269,36 @@ body {
 .toggle-row span { font-size: 0.875rem; font-weight: 600; color: var(--text); }
 .form-hint { font-size: 0.78rem; color: var(--text-muted); }
 
+/* ---- Filtro por mes (listados de ingresos, gastos, ahorros, deudas) ---- */
+.filtro-mes {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filtro-mes select,
+.filtro-mes input[type="number"] {
+  padding: 7px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+.filtro-mes select:focus,
+.filtro-mes input[type="number"]:focus { outline: none; border-color: var(--primary); }
+.filtro-contador {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: var(--bg);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
 /* ---- Tabla wrapper responsive ---- */
 .tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 

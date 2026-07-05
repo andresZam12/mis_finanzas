@@ -1,15 +1,25 @@
 <div class="page">
   <div class="page-header">
-    <h2>💰 Mis Ahorros</h2>
-    <a routerLink="/ahorros/nuevo" class="btn btn-success">➕ Registrar ahorro</a>
+    <h2>Mis Ahorros</h2>
+    <a routerLink="/ahorros/nuevo" class="btn btn-success">+ Registrar ahorro</a>
+  </div>
+
+  <div class="filtro-mes">
+    <select [(ngModel)]="mesFiltro">
+      @for (m of meses; track $index) {
+        <option [value]="$index + 1">{{ m }}</option>
+      }
+    </select>
+    <input type="number" [(ngModel)]="anioFiltro" min="2020" max="2099" style="width:84px" />
+    <span class="filtro-contador">{{ ahorrosDelMes.length }} registros</span>
   </div>
 
   @if (cargando) {
     <p class="alerta alerta-info">Cargando ahorros...</p>
   } @else {
     <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
-      <div class="stat-label">Total ahorrado</div>
-      <div class="stat-value stat-positive">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      <div class="stat-label">Total ahorrado — {{ nombreMesFiltro }} {{ anioFiltro }}</div>
+      <div class="stat-value stat-positive">{{ totalDelMes | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
     </div>
 
     <div class="card">
@@ -24,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (a of ahorros; track a.id) {
+          @for (a of ahorrosDelMes; track a.id) {
             <tr>
               <td>{{ a.fecha | date:'dd/MM/yyyy' }}</td>
               <td>{{ a.descripcion }}</td>
@@ -32,14 +42,13 @@
               <td class="monto-positivo">{{ a.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
               <td>
                 <button class="btn btn-danger" style="padding:4px 10px;font-size:0.8rem"
-                  (click)="eliminar(a.id)"
-                  [disabled]="eliminandoId === a.id">
+                  (click)="eliminar(a.id)" [disabled]="eliminandoId === a.id">
                   🗑️ Eliminar
                 </button>
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No hay ahorros registrados</td></tr>
+            <tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">Sin ahorros en {{ nombreMesFiltro }} {{ anioFiltro }}</td></tr>
           }
         </tbody>
       </table>

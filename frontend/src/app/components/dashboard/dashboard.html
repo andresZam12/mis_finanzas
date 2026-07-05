@@ -1,7 +1,7 @@
 <div class="page">
   <img class="marca-agua" src="/logo.png" aria-hidden="true" />
   <div class="page-header">
-    <h2>Mis Finanzas</h2>
+    <h2>Dashboard</h2>
     <div class="filtro-mes">
       <select [(ngModel)]="mesBusqueda" (change)="cargarReporte()">
         @for (m of meses; track $index) {
@@ -27,6 +27,20 @@
         {{ totalAhorros !== null ? (totalAhorros | currency:'COP':'symbol-narrow':'1.0-0') : '—' }}
       </div>
     </div>
+
+    @if (totalYoDebo > 0) {
+      <div class="stat-card">
+        <div class="stat-label">Yo debo (pendiente)</div>
+        <div class="stat-value stat-negative">{{ totalYoDebo | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      </div>
+    }
+
+    @if (totalMeDeben > 0) {
+      <div class="stat-card">
+        <div class="stat-label">Me deben (pendiente)</div>
+        <div class="stat-value stat-positive">{{ totalMeDeben | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      </div>
+    }
 
     @if (reporte) {
       <div class="stat-card card-ingresos">

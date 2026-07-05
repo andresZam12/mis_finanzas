@@ -1,15 +1,25 @@
 <div class="page">
   <div class="page-header">
-    <h2>📈 Ingresos</h2>
-    <a routerLink="/movimientos/nuevo-ingreso" class="btn btn-success">➕ Nuevo ingreso</a>
+    <h2>Ingresos</h2>
+    <a routerLink="/movimientos/nuevo-ingreso" class="btn btn-success">+ Nuevo ingreso</a>
+  </div>
+
+  <div class="filtro-mes">
+    <select [(ngModel)]="mesFiltro">
+      @for (m of meses; track $index) {
+        <option [value]="$index + 1">{{ m }}</option>
+      }
+    </select>
+    <input type="number" [(ngModel)]="anioFiltro" min="2020" max="2099" style="width:84px" />
+    <span class="filtro-contador">{{ ingresosDelMes.length }} registros</span>
   </div>
 
   @if (cargando) {
     <p class="alerta alerta-info">Cargando ingresos...</p>
   } @else {
     <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
-      <div class="stat-label">Total ingresos</div>
-      <div class="stat-value stat-positive">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      <div class="stat-label">Total ingresos — {{ nombreMesFiltro }} {{ anioFiltro }}</div>
+      <div class="stat-value stat-positive">{{ totalDelMes | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
     </div>
 
     <div class="card">
@@ -18,7 +28,6 @@
           <tr>
             <th>Fecha</th>
             <th>Descripción</th>
-            <th>Fuente</th>
             <th>Tipo pago</th>
             <th>Categoría</th>
             <th>Recurrente</th>
@@ -27,11 +36,10 @@
           </tr>
         </thead>
         <tbody>
-          @for (i of ingresos; track i.id) {
+          @for (i of ingresosDelMes; track i.id) {
             <tr>
               <td>{{ i.fecha | date:'dd/MM/yyyy' }}</td>
               <td>{{ i.descripcion }}</td>
-              <td>{{ i.fuente }}</td>
               <td>{{ i.tipoPago || '—' }}</td>
               <td>{{ i.categoria?.nombre }}</td>
               <td>
@@ -47,7 +55,7 @@
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:24px">No hay ingresos registrados</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">Sin ingresos en {{ nombreMesFiltro }} {{ anioFiltro }}</td></tr>
           }
         </tbody>
       </table>

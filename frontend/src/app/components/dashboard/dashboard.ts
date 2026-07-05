@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ReporteService } from '../../services/reporte.service';
 import { AhorroService } from '../../services/ahorro.service';
 import { MovimientoService } from '../../services/movimiento.service';
+import { DeudaService } from '../../services/deuda.service';
 import { ReporteFinanciero } from '../../models/reporte.model';
 
 interface TipoPagoRow { tipo: string; ingresos: number; gastos: number; balance: number; }
@@ -23,6 +24,8 @@ export class DashboardComponent implements OnInit {
   reporte: ReporteFinanciero | null = null;
   balanceTotal: number | null = null;
   totalAhorros: number | null = null;
+  totalYoDebo = 0;
+  totalMeDeben = 0;
   tipoPagoRows: TipoPagoRow[] = [];
   cargando = false;
   error = '';
@@ -38,7 +41,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private reporteService: ReporteService,
     private ahorroService: AhorroService,
-    private movimientoService: MovimientoService
+    private movimientoService: MovimientoService,
+    private deudaService: DeudaService
   ) {}
 
   ngOnInit() {
@@ -46,6 +50,7 @@ export class DashboardComponent implements OnInit {
     this.cargarReporte();
     this.cargarAhorros();
     this.cargarDesgloseTipoPago();
+    this.cargarDeudas();
   }
 
   cargarBalance() {
@@ -79,6 +84,22 @@ export class DashboardComponent implements OnInit {
         ingresos.forEach(i => { const r = get(i.tipoPago || 'Sin especificar'); r.ingresos += i.monto; r.balance += i.monto; });
         gastos.forEach(g => { const r = get(g.tipoPago || 'Sin especificar'); r.gastos += g.monto; r.balance -= g.monto; });
         this.tipoPagoRows = Array.from(map.values()).sort((a, b) => a.tipo.localeCompare(b.tipo));
+      },
+      error: () => {}
+    });
+  }
+
+  cargarDeudas() {
+    const uid = this.authService.getUsuarioId();
+    this.deudaService.listarPorUsuario(uid).subscribe({
+      next: deudas => {
+        const pendientes = deudas.filter(d => d.estado === 'PENDIENTE');
+        this.totalYoDebo = pendientes
+          .filter(d => d.tipo === 'YO_DEBO')
+          .reduce((s, d) => s + d.montoRestante, 0);
+        this.totalMeDeben = pendientes
+          .filter(d => d.tipo === 'ME_DEBEN')
+          .reduce((s, d) => s + d.montoRestante, 0);
       },
       error: () => {}
     });

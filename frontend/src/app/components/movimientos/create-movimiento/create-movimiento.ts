@@ -32,7 +32,6 @@ export class CreateMovimientoComponent implements OnInit {
       monto: ['', [Validators.required, Validators.min(1)]],
       descripcion: ['', Validators.required],
       categoriaId: ['', Validators.required],
-      fuente: [''],
       tipoPago: [''],
       esRecurrente: [false],
       porcentajeAhorro: [0, [Validators.min(0), Validators.max(100)]]
@@ -59,7 +58,6 @@ export class CreateMovimientoComponent implements OnInit {
       descripcion: val.descripcion,
       categoriaId: Number(val.categoriaId),
       usuarioId: uid,
-      fuente: val.fuente || undefined,
       tipoPago: val.tipoPago || undefined,
       esRecurrente: val.esRecurrente,
       porcentajeAhorro: this.esIngreso ? Number(val.porcentajeAhorro) : 0

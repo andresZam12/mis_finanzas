@@ -1,15 +1,25 @@
 <div class="page">
   <div class="page-header">
-    <h2>📉 Gastos</h2>
-    <a routerLink="/movimientos/nuevo-gasto" class="btn btn-danger">➖ Nuevo gasto</a>
+    <h2>Gastos</h2>
+    <a routerLink="/movimientos/nuevo-gasto" class="btn btn-danger">+ Nuevo gasto</a>
+  </div>
+
+  <div class="filtro-mes">
+    <select [(ngModel)]="mesFiltro">
+      @for (m of meses; track $index) {
+        <option [value]="$index + 1">{{ m }}</option>
+      }
+    </select>
+    <input type="number" [(ngModel)]="anioFiltro" min="2020" max="2099" style="width:84px" />
+    <span class="filtro-contador">{{ gastosDelMes.length }} registros</span>
   </div>
 
   @if (cargando) {
     <p class="alerta alerta-info">Cargando gastos...</p>
   } @else {
     <div class="stat-card" style="margin-bottom:16px;display:inline-block;padding:16px 24px">
-      <div class="stat-label">Total gastos</div>
-      <div class="stat-value stat-negative">{{ total | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+      <div class="stat-label">Total gastos — {{ nombreMesFiltro }} {{ anioFiltro }}</div>
+      <div class="stat-value stat-negative">{{ totalDelMes | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
     </div>
 
     <div class="card">
@@ -26,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (g of gastos; track g.id) {
+          @for (g of gastosDelMes; track g.id) {
             <tr>
               <td>{{ g.fecha | date:'dd/MM/yyyy' }}</td>
               <td>{{ g.descripcion }}</td>
@@ -45,7 +55,7 @@
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">No hay gastos registrados</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">Sin gastos en {{ nombreMesFiltro }} {{ anioFiltro }}</td></tr>
           }
         </tbody>
       </table>

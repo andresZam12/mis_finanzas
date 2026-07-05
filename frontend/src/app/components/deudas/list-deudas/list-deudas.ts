@@ -22,6 +22,12 @@ export class ListDeudasComponent implements OnInit {
   abonarError = '';
   abonando = false;
 
+  mostrarHistorial = false;
+  mesFiltroHistorial = new Date().getMonth() + 1;
+  anioFiltroHistorial = new Date().getFullYear();
+  readonly meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
   constructor(private deudaService: DeudaService, private authService: AuthService) {}
 
   ngOnInit() { this.cargar(); }
@@ -32,6 +38,32 @@ export class ListDeudasComponent implements OnInit {
       next: d => { this.deudas = d; this.cargando = false; },
       error: () => { this.cargando = false; }
     });
+  }
+
+  get deudasPendientes(): Deuda[] {
+    return this.deudas.filter(d => d.estado === 'PENDIENTE');
+  }
+
+  get deudasPagadasDelMes(): Deuda[] {
+    const mm = String(this.mesFiltroHistorial).padStart(2, '0');
+    const prefix = `${this.anioFiltroHistorial}-${mm}`;
+    return this.deudas
+      .filter(d => d.estado === 'PAGADA' && d.fechaRegistro?.startsWith(prefix))
+      .sort((a, b) => b.fechaRegistro.localeCompare(a.fechaRegistro));
+  }
+
+  get nombreMesHistorial(): string { return this.meses[this.mesFiltroHistorial - 1]; }
+
+  get totalPendienteYoDebo(): number {
+    return this.deudasPendientes
+      .filter(d => d.tipo === 'YO_DEBO')
+      .reduce((s, d) => s + d.montoRestante, 0);
+  }
+
+  get totalPendienteMeDeben(): number {
+    return this.deudasPendientes
+      .filter(d => d.tipo === 'ME_DEBEN')
+      .reduce((s, d) => s + d.montoRestante, 0);
   }
 
   marcarPagada(id: number) {
@@ -56,23 +88,12 @@ export class ListDeudasComponent implements OnInit {
 
   confirmarAbono(id: number) {
     const monto = this.montoAbono;
-    if (!monto || monto <= 0) {
-      this.abonarError = 'Ingresa un monto mayor a cero.';
-      return;
-    }
+    if (!monto || monto <= 0) { this.abonarError = 'Ingresa un monto mayor a cero.'; return; }
     this.abonando = true;
     this.abonarError = '';
     this.deudaService.abonar(id, monto).subscribe({
-      next: () => {
-        this.abonarId = null;
-        this.montoAbono = null;
-        this.abonando = false;
-        this.cargar();
-      },
-      error: (err: any) => {
-        this.abonarError = err.error || 'Error al registrar el abono.';
-        this.abonando = false;
-      }
+      next: () => { this.abonarId = null; this.montoAbono = null; this.abonando = false; this.cargar(); },
+      error: (err: any) => { this.abonarError = err.error || 'Error al registrar el abono.'; this.abonando = false; }
     });
   }
 

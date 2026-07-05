@@ -1,12 +1,32 @@
 <div class="page">
   <div class="page-header">
-    <h2>🤝 Mis Deudas</h2>
-    <a routerLink="/deudas/nueva" class="btn btn-primary">➕ Nueva deuda</a>
+    <h2>Mis Deudas</h2>
+    <a routerLink="/deudas/nueva" class="btn btn-primary">+ Nueva deuda</a>
   </div>
 
   @if (cargando) {
     <p class="alerta alerta-info">Cargando deudas...</p>
   } @else {
+
+    <!-- Resumen pendiente -->
+    @if (deudasPendientes.length > 0) {
+      <div class="stats-grid" style="margin-bottom:20px">
+        @if (totalPendienteYoDebo > 0) {
+          <div class="stat-card">
+            <div class="stat-label">Yo debo (pendiente)</div>
+            <div class="stat-value stat-negative">{{ totalPendienteYoDebo | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+          </div>
+        }
+        @if (totalPendienteMeDeben > 0) {
+          <div class="stat-card">
+            <div class="stat-label">Me deben (pendiente)</div>
+            <div class="stat-value stat-positive">{{ totalPendienteMeDeben | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Deudas pendientes -->
     <div class="card">
       <table class="tabla">
         <thead>
@@ -15,14 +35,13 @@
             <th>Descripción</th>
             <th>Tipo</th>
             <th>Tipo pago</th>
-            <th>Total / Pagado</th>
-            <th>Estado</th>
+            <th>Total / Abonado / Resta</th>
             <th>Fecha</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for (d of deudas; track d.id) {
+          @for (d of deudasPendientes; track d.id) {
             <tr>
               <td>
                 <strong>{{ d.persona }}</strong>
@@ -33,35 +52,28 @@
               <td>{{ d.descripcion }}</td>
               <td>
                 <span class="badge" [class.badge-red]="d.tipo === 'YO_DEBO'" [class.badge-blue]="d.tipo === 'ME_DEBEN'">
-                  {{ d.tipo === 'YO_DEBO' ? '↑ Yo debo' : '↓ Me deben' }}
+                  {{ d.tipo === 'YO_DEBO' ? 'Yo debo' : 'Me deben' }}
                 </span>
               </td>
               <td>{{ d.tipoPago || '—' }}</td>
               <td>
                 <div>{{ d.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
                 @if (d.montoPagado > 0) {
-                  <div style="color:#16a34a;font-size:0.8rem">Abonado: {{ d.montoPagado | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+                  <div style="color:#16a34a;font-size:0.8rem">Ab: {{ d.montoPagado | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
                   <div style="color:#dc2626;font-size:0.8rem">Resta: {{ d.montoRestante | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
                 }
               </td>
-              <td>
-                <span class="badge" [class.badge-yellow]="d.estado === 'PENDIENTE'" [class.badge-green]="d.estado === 'PAGADA'">
-                  {{ d.estado }}
-                </span>
-              </td>
               <td>{{ d.fechaRegistro | date:'dd/MM/yyyy' }}</td>
               <td style="display:flex;gap:4px;flex-wrap:wrap">
-                @if (d.estado === 'PENDIENTE') {
-                  <button class="btn btn-success" style="padding:4px 8px;font-size:0.8rem"
-                    (click)="marcarPagada(d.id!)" [disabled]="marcandoId === d.id">
-                    {{ marcandoId === d.id ? '...' : '✓ Pagar' }}
-                  </button>
-                  <button class="btn btn-primary" style="padding:4px 8px;font-size:0.8rem"
-                    (click)="iniciarAbono(d.id!)">
-                    💰 Abonar
-                  </button>
-                  <a [routerLink]="['/deudas', d.id, 'editar']" class="btn btn-secondary" style="padding:4px 8px;font-size:0.8rem">✏️</a>
-                }
+                <button class="btn btn-success" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="marcarPagada(d.id!)" [disabled]="marcandoId === d.id">
+                  {{ marcandoId === d.id ? '...' : 'Pagar' }}
+                </button>
+                <button class="btn btn-primary" style="padding:4px 8px;font-size:0.8rem"
+                  (click)="iniciarAbono(d.id!)">
+                  Abonar
+                </button>
+                <a [routerLink]="['/deudas', d.id, 'editar']" class="btn btn-secondary" style="padding:4px 8px;font-size:0.8rem">✏️</a>
                 <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
                   (click)="eliminar(d.id!)" [disabled]="eliminandoId === d.id">🗑️</button>
               </td>
@@ -69,12 +81,12 @@
 
             @if (abonarId === d.id) {
               <tr>
-                <td colspan="8" style="background:#f8fafc;padding:12px 16px">
+                <td colspan="7" style="background:#0d1117;padding:12px 16px;border-top:1px solid #1c2433">
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                    <span style="font-weight:600">Abonar a {{ d.persona }}:</span>
-                    <input type="number" [(ngModel)]="montoAbono" placeholder="Monto del abono"
+                    <span style="font-weight:600;color:#c9d1d9">Abonar a {{ d.persona }}:</span>
+                    <input type="number" [(ngModel)]="montoAbono" placeholder="Monto"
                       min="1" [max]="d.montoRestante"
-                      style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;width:180px" />
+                      style="padding:6px 10px;border:1px solid #30363d;border-radius:6px;background:transparent;color:#e6edf3;width:160px" />
                     <button class="btn btn-success" style="padding:6px 12px" (click)="confirmarAbono(d.id!)" [disabled]="abonando">
                       {{ abonando ? 'Registrando...' : 'Confirmar' }}
                     </button>
@@ -87,10 +99,70 @@
               </tr>
             }
           } @empty {
-            <tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:24px">No hay deudas registradas</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px">No hay deudas pendientes</td></tr>
           }
         </tbody>
       </table>
+    </div>
+
+    <!-- Historial de pagadas -->
+    <div style="margin-top:20px">
+      <button class="btn btn-secondary" (click)="mostrarHistorial = !mostrarHistorial" style="margin-bottom:12px">
+        {{ mostrarHistorial ? '▲ Ocultar historial' : '▼ Ver historial de pagadas' }}
+      </button>
+
+      @if (mostrarHistorial) {
+        <div class="filtro-mes" style="margin-bottom:12px">
+          <select [(ngModel)]="mesFiltroHistorial">
+            @for (m of meses; track $index) {
+              <option [value]="$index + 1">{{ m }}</option>
+            }
+          </select>
+          <input type="number" [(ngModel)]="anioFiltroHistorial" min="2020" max="2099" style="width:84px" />
+          <span class="filtro-contador">{{ deudasPagadasDelMes.length }} pagadas</span>
+        </div>
+
+        <div class="card">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Persona</th>
+                <th>Descripción</th>
+                <th>Tipo</th>
+                <th>Monto</th>
+                <th>Fecha registro</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of deudasPagadasDelMes; track d.id) {
+                <tr style="opacity:0.75">
+                  <td>
+                    <strong>{{ d.persona }}</strong>
+                    @if (d.recurrente) {
+                      <span class="badge badge-blue" style="margin-left:6px;font-size:0.68rem">↻ Recurrente</span>
+                    }
+                  </td>
+                  <td>{{ d.descripcion }}</td>
+                  <td>
+                    <span class="badge" [class.badge-red]="d.tipo === 'YO_DEBO'" [class.badge-blue]="d.tipo === 'ME_DEBEN'">
+                      {{ d.tipo === 'YO_DEBO' ? 'Yo debí' : 'Me debían' }}
+                    </span>
+                  </td>
+                  <td class="monto-positivo">{{ d.monto | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ d.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+                  <td>
+                    <button class="btn btn-danger" style="padding:4px 8px;font-size:0.8rem"
+                      (click)="eliminar(d.id!)" [disabled]="eliminandoId === d.id">🗑️</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:20px">Sin pagadas en {{ nombreMesHistorial }} {{ anioFiltroHistorial }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
   }
 </div>
