@@ -76,7 +76,7 @@
         <div class="barra-item">
           <span class="barra-label">Ingresos</span>
           <div class="barra-track">
-            <div class="barra barra-verde" [style.width.%]="reporte.totalIngresos > 0 ? 100 : 0"></div>
+            <div class="barra barra-verde" [style.width.%]="porcentajeIngresos"></div>
           </div>
           <span class="barra-monto">{{ reporte.totalIngresos | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
         </div>

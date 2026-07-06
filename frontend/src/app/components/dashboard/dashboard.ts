@@ -121,8 +121,15 @@ export class DashboardComponent implements OnInit {
 
   get nombreMes(): string { return this.meses[(this.mesBusqueda - 1)] || ''; }
 
+  get porcentajeIngresos(): number {
+    if (!this.reporte) return 0;
+    const max = Math.max(this.reporte.totalIngresos, this.reporte.totalGastos);
+    return max > 0 ? (this.reporte.totalIngresos / max) * 100 : 0;
+  }
+
   get porcentajeGastos(): number {
-    if (!this.reporte || this.reporte.totalIngresos <= 0) return 100;
-    return Math.min(100, (this.reporte.totalGastos / this.reporte.totalIngresos) * 100);
+    if (!this.reporte) return 0;
+    const max = Math.max(this.reporte.totalIngresos, this.reporte.totalGastos);
+    return max > 0 ? (this.reporte.totalGastos / max) * 100 : 0;
   }
 }
