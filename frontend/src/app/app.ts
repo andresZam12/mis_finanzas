@@ -78,6 +78,7 @@ export class App implements OnInit, OnDestroy {
           .filter(m => m.nombre !== 'Metas')
           .map(m => ({
             ...m,
+            nombre: m.nombre === 'Dashboard' ? 'INICIO' : m.nombre,
             expandido: true,
             hijos: m.hijos as MenuDisplay[]
           }));
@@ -96,7 +97,7 @@ export class App implements OnInit, OnDestroy {
   logout() { this.authService.logout(); }
 
   icono(nombre: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(ICONOS[nombre] ?? ICONOS['Dashboard']);
+    return this.sanitizer.bypassSecurityTrustHtml(ICONOS[nombre] ?? '');
   }
 
   get iniciales(): string {
