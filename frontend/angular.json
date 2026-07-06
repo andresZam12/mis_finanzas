@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "finanzasFront": {
+    "Misfinanzas": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
