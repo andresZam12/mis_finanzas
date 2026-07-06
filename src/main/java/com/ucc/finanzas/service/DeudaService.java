@@ -12,6 +12,7 @@ import com.ucc.finanzas.repository.GastoRepository;
 import com.ucc.finanzas.repository.IngresoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -151,13 +152,22 @@ public class DeudaService {
     }
 
     private void regenerar(Deuda origen) {
+        // La nueva deuda arranca el 1° del próximo mes para que no sea pagable el mismo día
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
         Deuda nueva = new Deuda(
                 origen.getPersona(),
                 origen.getMonto(),
                 origen.getDescripcion(),
                 origen.getTipo(),
                 origen.getTipoPago(),
-                new Date(),
+                cal.getTime(),
                 origen.getUsuario()
         );
         nueva.setRecurrente(true);

@@ -97,6 +97,21 @@ export class ListDeudasComponent implements OnInit {
     });
   }
 
+  // Devuelve true si la deuda recurrente aún no corresponde al mes en curso
+  esFuturo(d: Deuda): boolean {
+    if (!d.recurrente || !d.fechaRegistro) return false;
+    const hoy = new Date();
+    const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+    return d.fechaRegistro.substring(0, 7) > mesActual;
+  }
+
+  mesDisponible(d: Deuda): string {
+    if (!d.fechaRegistro) return '';
+    // Añadir mediodía para evitar desfase de zona horaria al parsear solo fecha
+    const fecha = new Date(d.fechaRegistro + 'T12:00:00');
+    return fecha.toLocaleString('es-CO', { month: 'long', year: 'numeric' });
+  }
+
   eliminar(id: number) {
     if (!confirm('¿Eliminar esta deuda?')) return;
     this.eliminandoId = id;
