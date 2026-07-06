@@ -1,7 +1,7 @@
 <div class="page">
   <img class="marca-agua" src="/logo.png" aria-hidden="true" />
   <div class="page-header">
-    <h2>MIS FINANZAS</h2>
+    <h2>Dashboard</h2>
     <div class="filtro-mes">
       <select [(ngModel)]="mesBusqueda" (change)="cargarReporte()">
         @for (m of meses; track $index) {
@@ -75,12 +75,16 @@
       <div class="barra-contenedor">
         <div class="barra-item">
           <span class="barra-label">Ingresos</span>
-          <div class="barra barra-verde" [style.width.%]="reporte.totalIngresos > 0 ? 100 : 0"></div>
+          <div class="barra-track">
+            <div class="barra barra-verde" [style.width.%]="reporte.totalIngresos > 0 ? 100 : 0"></div>
+          </div>
           <span class="barra-monto">{{ reporte.totalIngresos | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
         </div>
         <div class="barra-item">
           <span class="barra-label">Gastos</span>
-          <div class="barra barra-roja" [style.width.%]="reporte.totalIngresos > 0 ? (reporte.totalGastos / reporte.totalIngresos * 100) : 100"></div>
+          <div class="barra-track">
+            <div class="barra barra-roja" [style.width.%]="porcentajeGastos"></div>
+          </div>
           <span class="barra-monto">{{ reporte.totalGastos | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
         </div>
       </div>
@@ -90,6 +94,7 @@
   @if (tipoPagoRows.length > 0) {
     <div class="card" style="margin-top:20px">
       <h3 class="card-titulo">Desglose por tipo de pago</h3>
+      <div class="tabla-wrapper">
       <table class="tabla">
         <thead>
           <tr>
@@ -112,6 +117,7 @@
           }
         </tbody>
       </table>
+      </div>
     </div>
   }
 

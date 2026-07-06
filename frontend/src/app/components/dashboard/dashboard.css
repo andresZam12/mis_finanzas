@@ -53,14 +53,33 @@
   gap: 14px;
 }
 .barra-label { font-size: 0.875rem; font-weight: 600; color: #475569; }
+.barra-track {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 20px;
+  background: #f1f5f9;
+  height: 10px;
+}
 .barra {
   height: 10px;
   border-radius: 20px;
   transition: width 0.5s ease;
   min-width: 4px;
+  max-width: 100%;
 }
 .barra-verde { background: linear-gradient(90deg, #10b981, #34d399); }
 .barra-roja  { background: linear-gradient(90deg, #f43f5e, #fb7185); }
 .barra-monto { font-size: 0.875rem; font-weight: 600; color: #475569; text-align: right; }
+
+@media (max-width: 600px) {
+  .barra-item {
+    grid-template-columns: 70px 1fr;
+    grid-template-areas: "label monto" "track track";
+    gap: 6px 10px;
+  }
+  .barra-label { grid-area: label; }
+  .barra-track { grid-area: track; }
+  .barra-monto { grid-area: monto; text-align: right; font-size: 0.8rem; }
+}
 
 .accesos-rapidos { display: flex; flex-wrap: wrap; gap: 12px; }

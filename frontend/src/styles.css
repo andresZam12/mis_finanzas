@@ -325,8 +325,9 @@ body {
   .stat-value { font-size: 1.3rem; }
   .stat-icon  { font-size: 1.2rem; margin-bottom: 6px; }
 
-  .card { padding: 16px; border-radius: var(--radius); }
+  .card { padding: 16px; border-radius: var(--radius); overflow-x: auto; }
 
+  .tabla { min-width: 520px; }
   .tabla th { padding: 8px 12px; font-size: 0.67rem; }
   .tabla td { padding: 10px 12px; font-size: 0.84rem; }
 }

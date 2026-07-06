@@ -120,4 +120,9 @@ export class DashboardComponent implements OnInit {
   }
 
   get nombreMes(): string { return this.meses[(this.mesBusqueda - 1)] || ''; }
+
+  get porcentajeGastos(): number {
+    if (!this.reporte || this.reporte.totalIngresos <= 0) return 100;
+    return Math.min(100, (this.reporte.totalGastos / this.reporte.totalIngresos) * 100);
+  }
 }
