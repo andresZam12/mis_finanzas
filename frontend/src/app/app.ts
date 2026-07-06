@@ -16,7 +16,7 @@ const S = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBo
 const E = `</svg>`;
 
 const ICONOS: Record<string, string> = {
-  'Dashboard':        S+`<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>`+E,
+  'INICIO':        S+`<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>`+E,
   'Movimientos':      S+`<path d="m8 3-5 5 5 5"/><path d="M3 8h18"/><path d="m16 21 5-5-5-5"/><path d="M21 16H3"/>`+E,
   'Ingresos':         S+`<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>`+E,
   'Gastos':           S+`<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>`+E,
