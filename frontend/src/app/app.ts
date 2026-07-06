@@ -101,6 +101,6 @@ export class App implements OnInit, OnDestroy {
   }
 
   get iniciales(): string {
-    return this.username ? this.username.substring(0, 2).toUpperCase() : 'FP';
+    return this.username ? this.username.substring(0, 2).toUpperCase() : 'Z';
   }
 }
