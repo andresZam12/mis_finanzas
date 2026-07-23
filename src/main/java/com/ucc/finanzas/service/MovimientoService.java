@@ -43,13 +43,16 @@ public class MovimientoService {
         Usuario usuario = authService.buscarPorId(request.getUsuarioId());
         Categoria categoria = buscarCategoria(request.getCategoriaId());
 
+        String fuente = (request.getFuente() != null && !request.getFuente().isBlank())
+                ? request.getFuente() : request.getDescripcion();
+
         Ingreso ingreso = new Ingreso(
                 request.getMonto(),
                 new Date(),
                 request.getDescripcion(),
                 categoria,
                 usuario,
-                request.getFuente(),
+                fuente,
                 normalizarTipoPago(request.getTipoPago()),
                 request.isEsRecurrente()
         );
@@ -101,10 +104,13 @@ public class MovimientoService {
                 .orElseThrow(() -> new RuntimeException("Ingreso no encontrado con id: " + id));
         Categoria categoria = buscarCategoria(request.getCategoriaId());
 
+        String fuente = (request.getFuente() != null && !request.getFuente().isBlank())
+                ? request.getFuente() : request.getDescripcion();
+
         ingreso.setMonto(request.getMonto());
         ingreso.setDescripcion(request.getDescripcion());
         ingreso.setCategoria(categoria);
-        ingreso.setFuente(request.getFuente());
+        ingreso.setFuente(fuente);
         ingreso.setTipoPago(normalizarTipoPago(request.getTipoPago()));
         ingreso.setEsRecurrente(request.isEsRecurrente());
 

@@ -14,7 +14,7 @@ import java.util.Date;
 @Table(name = "ingreso")
 public class Ingreso extends Movimiento implements Recurrente {
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String fuente;
 
     @Column(length = 50)
