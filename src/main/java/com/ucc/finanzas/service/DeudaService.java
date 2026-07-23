@@ -85,7 +85,7 @@ public class DeudaService {
         return deudaRepository.save(deuda);
     }
 
-    public Deuda marcarPagada(Long deudaId) {
+    public Deuda marcarPagada(Long deudaId, String tipoPago) {
         Deuda deuda = deudaRepository.findById(deudaId)
                 .orElseThrow(() -> new RuntimeException("Deuda no encontrada con id: " + deudaId));
 
@@ -95,14 +95,14 @@ public class DeudaService {
         }
 
         deudaRepository.save(deuda);
-        registrarMovimientoPago(deuda, deuda.getMonto(), "Pago deuda");
+        registrarMovimientoPago(deuda, deuda.getMonto(), "Pago deuda", normalizarTipoPago(tipoPago));
         if (deuda.isRecurrente()) {
             regenerar(deuda);
         }
         return deuda;
     }
 
-    public Deuda abonarDeuda(Long deudaId, double monto) {
+    public Deuda abonarDeuda(Long deudaId, double monto, String tipoPago) {
         Deuda deuda = deudaRepository.findById(deudaId)
                 .orElseThrow(() -> new RuntimeException("Deuda no encontrada con id: " + deudaId));
 
@@ -118,7 +118,7 @@ public class DeudaService {
         }
 
         deuda.abonar(monto);
-        registrarMovimientoPago(deuda, monto, "Abono deuda");
+        registrarMovimientoPago(deuda, monto, "Abono deuda", normalizarTipoPago(tipoPago));
         deudaRepository.save(deuda);
 
         if ("PAGADA".equals(deuda.getEstado()) && deuda.isRecurrente()) {
@@ -175,11 +175,11 @@ public class DeudaService {
     }
 
     // YO_DEBO → pago sale de mi bolsillo → Gasto; ME_DEBEN → cobro recibido → Ingreso
-    private void registrarMovimientoPago(Deuda deuda, double monto, String prefijo) {
+    private void registrarMovimientoPago(Deuda deuda, double monto, String prefijo, String tipoPago) {
         String desc = prefijo + " (" + deuda.getPersona() + ")"
                 + (deuda.getDescripcion() != null && !deuda.getDescripcion().isEmpty()
                    ? ": " + deuda.getDescripcion() : "");
-        String tipoPago = deuda.getTipoPago() != null ? deuda.getTipoPago() : "OTRO";
+        if (tipoPago == null || tipoPago.isEmpty()) tipoPago = "TRANSFERENCIA";
 
         if ("YO_DEBO".equals(deuda.getTipo())) {
             List<Categoria> cats = categoriaRepository.findByTipo("GASTO");

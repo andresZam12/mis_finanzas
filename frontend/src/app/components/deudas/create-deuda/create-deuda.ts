@@ -26,7 +26,6 @@ export class CreateDeudaComponent {
       monto: ['', [Validators.required, Validators.min(1)]],
       descripcion: ['', Validators.required],
       tipo: ['YO_DEBO', Validators.required],
-      tipoPago: [''],
       recurrente: [false]
     });
   }
@@ -40,7 +39,6 @@ export class CreateDeudaComponent {
       monto: Number(val.monto),
       descripcion: val.descripcion,
       tipo: val.tipo,
-      tipoPago: val.tipoPago || undefined,
       recurrente: val.recurrente,
       usuarioId: this.authService.getUsuarioId()
     }).subscribe({

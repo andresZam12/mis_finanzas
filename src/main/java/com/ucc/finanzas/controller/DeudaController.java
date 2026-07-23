@@ -49,21 +49,24 @@ public class DeudaController {
         }
     }
 
-    // PUT /deudas/{id}/pagar
+    // PUT /deudas/{id}/pagar?tipoPago=TRANSFERENCIA
     @PutMapping("/{id}/pagar")
-    public ResponseEntity<?> marcarPagada(@PathVariable Long id) {
+    public ResponseEntity<?> marcarPagada(@PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "TRANSFERENCIA") String tipoPago) {
         try {
-            return ResponseEntity.ok(deudaService.marcarPagada(id));
+            return ResponseEntity.ok(deudaService.marcarPagada(id, tipoPago));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // POST /deudas/{id}/abonar?monto=500
+    // POST /deudas/{id}/abonar?monto=500&tipoPago=EFECTIVO
     @PostMapping("/{id}/abonar")
-    public ResponseEntity<?> abonar(@PathVariable Long id, @RequestParam double monto) {
+    public ResponseEntity<?> abonar(@PathVariable Long id,
+            @RequestParam double monto,
+            @RequestParam(required = false, defaultValue = "TRANSFERENCIA") String tipoPago) {
         try {
-            return ResponseEntity.ok(deudaService.abonarDeuda(id, monto));
+            return ResponseEntity.ok(deudaService.abonarDeuda(id, monto, tipoPago));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

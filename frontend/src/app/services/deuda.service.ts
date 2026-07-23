@@ -18,12 +18,12 @@ export class DeudaService {
     return this.http.put<Deuda>(`${this.apiUrl}/${id}`, req);
   }
 
-  marcarPagada(id: number): Observable<Deuda> {
-    return this.http.put<Deuda>(`${this.apiUrl}/${id}/pagar`, {});
+  marcarPagada(id: number, tipoPago: string): Observable<Deuda> {
+    return this.http.put<Deuda>(`${this.apiUrl}/${id}/pagar`, {}, { params: { tipoPago } });
   }
 
-  abonar(id: number, monto: number): Observable<Deuda> {
-    return this.http.post<Deuda>(`${this.apiUrl}/${id}/abonar`, null, { params: { monto } });
+  abonar(id: number, monto: number, tipoPago: string): Observable<Deuda> {
+    return this.http.post<Deuda>(`${this.apiUrl}/${id}/abonar`, null, { params: { monto, tipoPago } });
   }
 
   eliminar(id: number): Observable<void> {

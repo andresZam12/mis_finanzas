@@ -15,10 +15,17 @@ import { Deuda } from '../../../models/deuda.model';
 export class ListDeudasComponent implements OnInit {
   deudas: Deuda[] = [];
   cargando = true;
-  marcandoId: number | null = null;
   eliminandoId: number | null = null;
+
+  // --- Pagar ---
+  pagandoId: number | null = null;
+  tipoPagoPago = 'TRANSFERENCIA';
+  confirmando = false;
+
+  // --- Abonar ---
   abonarId: number | null = null;
   montoAbono: number | null = null;
+  tipoPagoAbono = 'TRANSFERENCIA';
   abonarError = '';
   abonando = false;
 
@@ -66,18 +73,30 @@ export class ListDeudasComponent implements OnInit {
       .reduce((s, d) => s + d.montoRestante, 0);
   }
 
-  marcarPagada(id: number) {
-    this.marcandoId = id;
-    this.deudaService.marcarPagada(id).subscribe({
-      next: () => { this.marcandoId = null; this.cargar(); },
-      error: () => { this.marcandoId = null; }
+  iniciarPago(id: number) {
+    this.pagandoId = id;
+    this.tipoPagoPago = 'TRANSFERENCIA';
+    this.abonarId = null;
+  }
+
+  cancelarPago() {
+    this.pagandoId = null;
+  }
+
+  confirmarPago(id: number) {
+    this.confirmando = true;
+    this.deudaService.marcarPagada(id, this.tipoPagoPago).subscribe({
+      next: () => { this.pagandoId = null; this.confirmando = false; this.cargar(); },
+      error: () => { this.pagandoId = null; this.confirmando = false; }
     });
   }
 
   iniciarAbono(id: number) {
     this.abonarId = id;
     this.montoAbono = null;
+    this.tipoPagoAbono = 'TRANSFERENCIA';
     this.abonarError = '';
+    this.pagandoId = null;
   }
 
   cancelarAbono() {
@@ -91,13 +110,12 @@ export class ListDeudasComponent implements OnInit {
     if (!monto || monto <= 0) { this.abonarError = 'Ingresa un monto mayor a cero.'; return; }
     this.abonando = true;
     this.abonarError = '';
-    this.deudaService.abonar(id, monto).subscribe({
+    this.deudaService.abonar(id, monto, this.tipoPagoAbono).subscribe({
       next: () => { this.abonarId = null; this.montoAbono = null; this.abonando = false; this.cargar(); },
       error: (err: any) => { this.abonarError = err.error || 'Error al registrar el abono.'; this.abonando = false; }
     });
   }
 
-  // Devuelve true si la deuda recurrente aún no corresponde al mes en curso
   esFuturo(d: Deuda): boolean {
     if (!d.recurrente || !d.fechaRegistro) return false;
     const hoy = new Date();
@@ -107,7 +125,6 @@ export class ListDeudasComponent implements OnInit {
 
   mesDisponible(d: Deuda): string {
     if (!d.fechaRegistro) return '';
-    // Añadir mediodía para evitar desfase de zona horaria al parsear solo fecha
     const fecha = new Date(d.fechaRegistro + 'T12:00:00');
     return fecha.toLocaleString('es-CO', { month: 'long', year: 'numeric' });
   }
