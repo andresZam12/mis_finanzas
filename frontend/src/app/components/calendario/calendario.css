@@ -11,6 +11,11 @@
   letter-spacing: -0.02em;
 }
 
+.cal-stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+  margin-bottom: 16px;
+}
+
 .cal-loading {
   text-align: center;
   padding: 80px;

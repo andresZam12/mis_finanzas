@@ -17,6 +17,19 @@
     <div class="alerta alerta-error">&#10007; {{ error }}</div>
   }
 
+  <div class="stats-grid cal-stats-grid">
+    <div class="stat-card" [class.card-balance-mes]="balanceTotal !== null && balanceTotal >= 0"
+                           [class.card-gastos]="balanceTotal !== null && balanceTotal < 0">
+      <div class="stat-label">Balance total acumulado</div>
+      <div class="stat-value"
+           [class.stat-positive]="balanceTotal !== null && balanceTotal >= 0"
+           [class.stat-negative]="balanceTotal !== null && balanceTotal < 0">
+        {{ balanceTotal !== null ? (balanceTotal | currency:'COP':'symbol-narrow':'1.0-0') : '—' }}
+      </div>
+      <div style="font-size:0.72rem;color:#64748b;margin-top:4px">Ingresos − Gastos (histórico)</div>
+    </div>
+  </div>
+
   @if (cargando) {
     <div class="cal-loading">Cargando calendario...</div>
   } @else {

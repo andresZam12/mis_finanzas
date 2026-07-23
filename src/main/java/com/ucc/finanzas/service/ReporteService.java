@@ -11,7 +11,6 @@ import com.ucc.finanzas.repository.IngresoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,18 +59,14 @@ public class ReporteService {
                 .mapToDouble(Gasto::getMonto)
                 .sum();
 
-        cal.set(anio, mes - 1, 1, 0, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date iniciomes = cal.getTime();
-        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        cal.set(Calendar.HOUR_OF_DAY, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        Date finMes = cal.getTime();
-
-        double totalAhorros = ahorroRepository
-                .findByUsuarioIdAndFechaBetween(usuarioId, iniciomes, finMes)
-                .stream().mapToDouble(Ahorro::getMonto).sum();
+        double totalAhorros = ahorroRepository.findByUsuarioId(usuarioId).stream()
+                .filter(a -> {
+                    cal.setTime(a.getFecha());
+                    return (cal.get(Calendar.MONTH) + 1) == mes
+                            && cal.get(Calendar.YEAR) == anio;
+                })
+                .mapToDouble(Ahorro::getMonto)
+                .sum();
 
         return new ReporteFinanciero(mes, anio, totalIngresos, totalGastos, totalAhorros, usuario.getNombre());
     }

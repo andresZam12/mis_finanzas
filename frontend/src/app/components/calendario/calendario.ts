@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ReporteDiarioService } from '../../services/reporte-diario.service';
+import { ReporteService } from '../../services/reporte.service';
 import { ReporteDiario } from '../../models/reporte-diario.model';
 
 interface MovimientoItem {
@@ -22,7 +23,7 @@ interface DiaCalendario {
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [CurrencyPipe, DecimalPipe],
   templateUrl: './calendario.html',
   styleUrl: './calendario.css'
 })
@@ -32,6 +33,7 @@ export class CalendarioComponent implements OnInit {
   dias: DiaCalendario[] = [];
   diaSeleccionado: DiaCalendario | null = null;
   movimientosDetalle: MovimientoItem[] = [];
+  balanceTotal: number | null = null;
   cargando = false;
   generando = false;
   error = '';
@@ -43,10 +45,22 @@ export class CalendarioComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private reporteDiarioService: ReporteDiarioService
+    private reporteDiarioService: ReporteDiarioService,
+    private reporteService: ReporteService
   ) {}
 
-  ngOnInit() { this.cargarMes(); }
+  ngOnInit() {
+    this.cargarMes();
+    this.cargarBalanceTotal();
+  }
+
+  cargarBalanceTotal() {
+    const uid = this.authService.getUsuarioId();
+    this.reporteService.calcularBalanceTotal(uid).subscribe({
+      next: b => this.balanceTotal = b,
+      error: () => {}
+    });
+  }
 
   cargarMes() {
     this.cargando = true;
