@@ -243,15 +243,18 @@
 /* ========== MOBILE TOPBAR ========== */
 .topbar-mobile { display: none; }
 .btn-hamburger {
-  background: none;
-  border: none;
-  color: #c9d1d9;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: #e6edf3;
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   align-items: center;
   line-height: 1;
+  transition: background 0.15s;
 }
+.btn-hamburger:hover, .btn-hamburger:active { background: rgba(255,255,255,0.16); }
 .topbar-titulo { font-size: 0.92rem; font-weight: 700; color: #e6edf3; letter-spacing: -0.01em; }
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 99; }
 
