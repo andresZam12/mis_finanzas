@@ -14,13 +14,6 @@
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card card-balance">
-      <div class="stat-label">Balance total</div>
-      <div class="stat-value" [class.stat-positive]="(balanceTotal ?? 0) >= 0" [class.stat-negative]="(balanceTotal ?? 0) < 0">
-        {{ balanceTotal !== null ? (balanceTotal | currency:'COP':'symbol-narrow':'1.0-0') : '—' }}
-      </div>
-    </div>
-
     <div class="stat-card card-ahorros">
       <div class="stat-label">Total ahorrado</div>
       <div class="stat-value stat-positive">
@@ -53,11 +46,21 @@
         <div class="stat-value stat-negative">{{ reporte.totalGastos | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
       </div>
 
+      @if (reporte.totalAhorros > 0) {
+        <div class="stat-card card-ahorros">
+          <div class="stat-label">Ahorrado {{ nombreMes }}</div>
+          <div class="stat-value stat-positive">{{ reporte.totalAhorros | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+      }
+
       <div class="stat-card card-balance-mes">
         <div class="stat-label">Balance {{ nombreMes }}</div>
         <div class="stat-value" [class.stat-positive]="reporte.balance >= 0" [class.stat-negative]="reporte.balance < 0">
           {{ reporte.balance | currency:'COP':'symbol-narrow':'1.0-0' }}
         </div>
+        @if (reporte.totalAhorros > 0) {
+          <div style="font-size:0.72rem;color:#64748b;margin-top:4px">Ingresos − Gastos − Ahorro</div>
+        }
       </div>
     }
   </div>

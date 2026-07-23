@@ -22,7 +22,6 @@ interface TipoPagoRow { tipo: string; ingresos: number; gastos: number; balance:
 })
 export class DashboardComponent implements OnInit {
   reporte: ReporteFinanciero | null = null;
-  balanceTotal: number | null = null;
   totalAhorros: number | null = null;
   totalYoDebo = 0;
   totalMeDeben = 0;
@@ -46,19 +45,10 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cargarBalance();
     this.cargarReporte();
     this.cargarAhorros();
     this.cargarDesgloseTipoPago();
     this.cargarDeudas();
-  }
-
-  cargarBalance() {
-    const uid = this.authService.getUsuarioId();
-    this.reporteService.calcularBalanceTotal(uid).subscribe({
-      next: b => this.balanceTotal = b,
-      error: () => {}
-    });
   }
 
   cargarAhorros() {

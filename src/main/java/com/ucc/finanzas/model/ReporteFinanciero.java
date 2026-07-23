@@ -10,6 +10,7 @@ public class ReporteFinanciero {
     private int anio;
     private double totalIngresos;
     private double totalGastos;
+    private double totalAhorros;
     private double balance;
     private String nombreUsuario;
 
@@ -17,17 +18,18 @@ public class ReporteFinanciero {
     }
 
     public ReporteFinanciero(int mes, int anio, double totalIngresos,
-                             double totalGastos, String nombreUsuario) {
+                             double totalGastos, double totalAhorros, String nombreUsuario) {
         this.mes = mes;
         this.anio = anio;
         this.totalIngresos = totalIngresos;
         this.totalGastos = totalGastos;
+        this.totalAhorros = totalAhorros;
         this.nombreUsuario = nombreUsuario;
         this.balance = calcularBalance();
     }
 
     public double calcularBalance() {
-        return this.totalIngresos - this.totalGastos;
+        return this.totalIngresos - this.totalGastos - this.totalAhorros;
     }
 
     public String generarResumen() {
@@ -58,6 +60,10 @@ public class ReporteFinanciero {
 
     public double getBalance() {
         return balance;
+    }
+
+    public double getTotalAhorros() {
+        return totalAhorros;
     }
 
     public String getNombreUsuario() {

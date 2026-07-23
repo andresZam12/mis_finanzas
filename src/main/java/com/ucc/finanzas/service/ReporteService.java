@@ -1,14 +1,17 @@
 package com.ucc.finanzas.service;
 
+import com.ucc.finanzas.model.Ahorro;
 import com.ucc.finanzas.model.Gasto;
 import com.ucc.finanzas.model.Ingreso;
 import com.ucc.finanzas.model.ReporteFinanciero;
 import com.ucc.finanzas.model.Usuario;
+import com.ucc.finanzas.repository.AhorroRepository;
 import com.ucc.finanzas.repository.GastoRepository;
 import com.ucc.finanzas.repository.IngresoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,13 +22,16 @@ public class ReporteService {
 
     private final IngresoRepository ingresoRepository;
     private final GastoRepository gastoRepository;
+    private final AhorroRepository ahorroRepository;
     private final AuthService authService;
 
     public ReporteService(IngresoRepository ingresoRepository,
                           GastoRepository gastoRepository,
+                          AhorroRepository ahorroRepository,
                           AuthService authService) {
         this.ingresoRepository = ingresoRepository;
         this.gastoRepository = gastoRepository;
+        this.ahorroRepository = ahorroRepository;
         this.authService = authService;
     }
 
@@ -54,7 +60,20 @@ public class ReporteService {
                 .mapToDouble(Gasto::getMonto)
                 .sum();
 
-        return new ReporteFinanciero(mes, anio, totalIngresos, totalGastos, usuario.getNombre());
+        cal.set(anio, mes - 1, 1, 0, 0, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date iniciomes = cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date finMes = cal.getTime();
+
+        double totalAhorros = ahorroRepository
+                .findByUsuarioIdAndFechaBetween(usuarioId, iniciomes, finMes)
+                .stream().mapToDouble(Ahorro::getMonto).sum();
+
+        return new ReporteFinanciero(mes, anio, totalIngresos, totalGastos, totalAhorros, usuario.getNombre());
     }
 
     public double calcularBalanceTotal(Long usuarioId) {
