@@ -93,7 +93,12 @@ export class DashboardComponent implements OnInit {
     const uid = this.authService.getUsuarioId();
     this.deudaService.listarPorUsuario(uid).subscribe({
       next: deudas => {
-        const pendientes = deudas.filter(d => d.estado === 'PENDIENTE');
+        const hoy = new Date();
+        const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+        const pendientes = deudas.filter(d =>
+          d.estado === 'PENDIENTE' &&
+          !(d.recurrente && d.fechaRegistro && d.fechaRegistro.substring(0, 7) > mesActual)
+        );
         this.totalYoDebo = pendientes
           .filter(d => d.tipo === 'YO_DEBO')
           .reduce((s, d) => s + d.montoRestante, 0);

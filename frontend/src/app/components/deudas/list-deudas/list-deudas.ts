@@ -56,13 +56,13 @@ export class ListDeudasComponent implements OnInit {
 
   get totalPendienteYoDebo(): number {
     return this.deudasPendientes
-      .filter(d => d.tipo === 'YO_DEBO')
+      .filter(d => d.tipo === 'YO_DEBO' && !this.esFuturo(d))
       .reduce((s, d) => s + d.montoRestante, 0);
   }
 
   get totalPendienteMeDeben(): number {
     return this.deudasPendientes
-      .filter(d => d.tipo === 'ME_DEBEN')
+      .filter(d => d.tipo === 'ME_DEBEN' && !this.esFuturo(d))
       .reduce((s, d) => s + d.montoRestante, 0);
   }
 
